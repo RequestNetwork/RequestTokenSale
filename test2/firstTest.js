@@ -38,7 +38,7 @@ contract('RequestCore Administrative part', function(accounts) {
 
 	var rate = 2650;
 	
-	// var baseEthCapPerAddress = web3.toWei(7, "ether");
+	var baseEthCapPerAddress = web3.toWei(7, "ether");
 	var totalAmountSupply = (new BigNumber(10).pow(18)).mul(1000000000);
     // var cap; // = web3.toWei(100000, "ether");
 
@@ -56,7 +56,7 @@ contract('RequestCore Administrative part', function(accounts) {
 		startTime = Math.floor(startTime/1000);
 		endTime = Math.floor(endTime/1000);
 
-    	requestCrowdsale = await RequestCrowdsale.new(startTime, endTime, rate, wallet, totalAmountSupply, tokenBeforeSaleAddress, tokenBeforeSaleAmount);
+    	requestCrowdsale = await RequestCrowdsale.new(startTime, endTime, rate, wallet, totalAmountSupply, baseEthCapPerAddress, tokenBeforeSaleAddress, tokenBeforeSaleAmount);
     	requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
 
     });
@@ -67,6 +67,7 @@ contract('RequestCore Administrative part', function(accounts) {
 		assert((new BigNumber(10).pow(18)).mul(500000000).equals(await requestQuark.balanceOf(wallet)), "wallet balance");
 		assert((new BigNumber(10).pow(18)).mul(380000000).equals(await requestQuark.balanceOf(requestCrowdsale.address)), "requestCrowdsale balance");
     });
+
 
 	it("Buy token", async function () {
 		await requestCrowdsale.updateOneUser(guy1,true);
@@ -84,7 +85,7 @@ contract('RequestCore Administrative part', function(accounts) {
 		await expectThrow(requestCrowdsale.sendTransaction({from:guy1,value:web3.toWei(7, "ether")}));
 
 	});
-
+/*
 	it("Add and delete guys to/from whitelist", async function () {
 		assert.equal(await requestCrowdsale.whiteList(guy1),false, "guy1 should NOT be on whitelist");
 		var r = await requestCrowdsale.updateOneUser(guy1,true);
@@ -150,7 +151,7 @@ contract('RequestCore Administrative part', function(accounts) {
 		assert.equal(await requestCrowdsale.whiteList(guy4),false, "guy4 should NOT be on whitelist");
 		assert.equal(await requestCrowdsale.whiteList(guy5),false, "guy5 should NOT be on whitelist");
 	});
-
+*/
 
 });
 

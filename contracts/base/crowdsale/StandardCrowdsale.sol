@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import '../token/MintableToken.sol';
+import '../token/StandardToken.sol';
 import '../math/SafeMath.sol';
 
 /**
@@ -11,7 +11,7 @@ import '../math/SafeMath.sol';
  * on a token per ETH rate. Funds collected are forwarded to a wallet
  * as they arrive.
  */
-contract Crowdsale {
+contract StandardCrowdsale {
   using SafeMath for uint256;
 
   // The token being sold
@@ -40,7 +40,7 @@ contract Crowdsale {
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
 
-  function Crowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount, address[] tokenBeforeSaleAddress, uint256[] tokenBeforeSaleAmount) {
+  function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount) {
     require(_startTime >= now);
     require(_endTime >= _startTime);
     require(_rate > 0);
