@@ -19,7 +19,7 @@ var expectThrow = async function(promise) {
 };
 
 
-contract('RequestCore Administrative part', function(accounts) {
+contract('Creation Token Sale', function(accounts) {
 	// account setting ----------------------------------------------------------------------
 	var admin = accounts[0];
 	var multiSigWallet = accounts[1];
