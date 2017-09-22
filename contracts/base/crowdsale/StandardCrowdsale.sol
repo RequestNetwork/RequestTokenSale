@@ -39,7 +39,6 @@ contract StandardCrowdsale {
    */
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
-
   function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount) {
     require(_startTime >= now);
     require(_endTime >= _startTime);
@@ -55,18 +54,26 @@ contract StandardCrowdsale {
 
   // creates the token to be sold.
   // REQUEST-NOTE : change to not mint and accept parameters
-  function createTokenContract(uint _tokenTotalAmount, address _wallet) internal returns (StandardToken) {
+  function createTokenContract(uint _tokenTotalAmount, address _wallet) 
+    internal 
+    returns(StandardToken) 
+  {
     return new StandardToken();
   }
 
   // fallback function can be used to buy tokens
-  function () payable {
+  function () 
+    payable 
+  {
     buyTokens(msg.sender);
   }
 
   // low level token purchase function
   // REQUEST-NOTE : change to not mint but transfer from this contract
-  function buyTokens(address beneficiary) public payable {
+  function buyTokens(address beneficiary) 
+    public 
+    payable 
+  {
     require(beneficiary != 0x0);
     require(validPurchase());
 
@@ -86,19 +93,29 @@ contract StandardCrowdsale {
 
   // send ether to the fund collection wallet
   // override to create custom fund forwarding mechanisms
-  function forwardFunds() internal {
+  function forwardFunds() 
+    internal 
+  {
     wallet.transfer(msg.value);
   }
 
   // @return true if the transaction can buy tokens
-  function validPurchase() internal constant returns (bool) {
+  function validPurchase() 
+    internal 
+    constant 
+    returns(bool) 
+  {
     bool withinPeriod = now >= startTime && now <= endTime;
     bool nonZeroPurchase = msg.value != 0;
     return withinPeriod && nonZeroPurchase;
   }
 
   // @return true if crowdsale event has ended
-  function hasEnded() public constant returns (bool) {
+  function hasEnded() 
+    public 
+    constant 
+    returns(bool) 
+  {
     return now > endTime;
   }
 
@@ -107,4 +124,8 @@ contract StandardCrowdsale {
     _;
   }
 
+  modifier only24HBeforeSale() {
+    require(now < startTime-(1 days));
+    _;
+  }
 }

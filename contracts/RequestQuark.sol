@@ -54,11 +54,15 @@ contract RequestQuark is StandardToken, Ownable {
     //     return super.transferFrom(_from, _to, _value);
     // }
 
-    function emergencyERC20Drain( ERC20 token, uint amount ) onlyOwner {
+    function emergencyERC20Drain( ERC20 token, uint amount ) 
+        onlyOwner 
+    {
         token.transfer( owner, amount );
     }
 
-    function emergencyEthDrain( uint amount ) onlyOwner {
+    function emergencyEthDrain( uint amount ) 
+        onlyOwner 
+    {
         owner.transfer( amount );
     }
 }

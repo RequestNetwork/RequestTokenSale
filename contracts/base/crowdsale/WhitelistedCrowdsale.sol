@@ -11,28 +11,39 @@ import '../ownership/Ownable.sol';
  */
 contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
   // the white list
-  mapping(address=>bool) public whiteList;
+  mapping(address=>bool) public registered;
 
-  event StatusUserUpdatedWhiteList( address user, bool accepted );
-  // update status of one user: if accepted is true the user is added to the whiteList
-  function updateOneUser( address _user, bool _accepted ) onlyOwner {
-      whiteList[_user] = _accepted;
-      StatusUserUpdatedWhiteList( _user, _accepted );
+  event RegistrationStatusChanged( address target, bool isRegistered );
+
+  /// @dev Changes registration status of an address for participation. 0x style
+  /// @param target Address that will be registered/deregistered.
+  /// @param isRegistered New registration status of address.
+  function changeRegistrationStatus(address target, bool isRegistered)
+      public
+      onlyOwner
+      only24HBeforeSale
+  {
+      registered[target] = isRegistered;
+      RegistrationStatusChanged( target, isRegistered );
   }
 
-  // update a bunch of user 
-  // an optimization in case of network congestion
-  function updateWhiteList( address[] _users, bool[] _acceptations ) onlyOwner {
-      require(_users.length == _acceptations.length );
-      for( uint i = 0 ; i < _users.length ; i++ ) {
-          updateOneUser( _users[i], _acceptations[i] );
+  /// @dev Changes registration statuses of addresses for participation. 0x style
+  /// @param targets Addresses that will be registered/deregistered.
+  /// @param isRegistered New registration status of addresss.
+  function changeRegistrationStatuses(address[] targets, bool isRegistered)
+      public
+      onlyOwner
+      only24HBeforeSale
+  {
+      for (uint i = 0; i < targets.length; i++) {
+          changeRegistrationStatus(targets[i], isRegistered);
       }
   }
 
   // overriding Crowdsale#validPurchase to add whilelist
   // @return true if investors can buy at the moment, false otherwise
   function validPurchase() internal constant returns (bool) {
-    return super.validPurchase() && whiteList[msg.sender];
+    return super.validPurchase() && registered[msg.sender];
   }
 }
   
