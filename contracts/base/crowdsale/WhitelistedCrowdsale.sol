@@ -4,8 +4,8 @@ import "./StandardCrowdsale.sol";
 import '../ownership/Ownable.sol';
 
 /**
- * @title CrowdsaleWhitelisted
- * @dev This is an extension to add whitelist to your crowdsale
+ * @title WhitelistedCrowdsale
+ * @dev This is an extension to add whitelist to a crowdsale
  * @author vrolland@Request
  *
  */
