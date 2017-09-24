@@ -1,4 +1,4 @@
-return;
+
 var RequestCrowdsale = artifacts.require("./RequestCrowdsale.sol");
 var RequestQuark = artifacts.require("./RequestQuark.sol");
 var BigNumber = require('bignumber.js');
@@ -29,6 +29,7 @@ contract('Creation Token Sale', function(accounts) {
 	var randomGuy1 = accounts[3];
 	// tool const ----------------------------------------------------------------------------
 	const day = 60 * 60 * 24 * 1000;
+	const dayInsecond = 60 * 60 * 24;
 	const second = 1000;
 
 	// crowdsale setting ---------------------------------------------------------------------
@@ -43,11 +44,14 @@ contract('Creation Token Sale', function(accounts) {
 		// setting in wei for solidity
 	const capCrowdsaleInWei = web3.toWei(capCrowdsaleInETH, "ether");
 
-	const startTimeTimestampJS = new Date("2017-10-13").getTime();
-	const endTimeTimestampJS 	= new Date("2017-10-17").getTime();
-		// translate date in Second for solidity
-	const startTimeSolidity = Math.floor(startTimeTimestampJS/1000);
-	const endTimeSolidity = Math.floor(endTimeTimestampJS/1000);
+	// const startTimeTimestampJS = new Date("2017-10-13").getTime();
+	// const endTimeTimestampJS 	= new Date("2017-10-17").getTime();
+	// 	// translate date in Second for solidity
+	// const startTimeSolidity = Math.floor(startTimeTimestampJS/1000);
+	// const endTimeSolidity = Math.floor(endTimeTimestampJS/1000);
+	var currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+	var startTimeSolidity = currentTimeStamp + 2*dayInsecond;
+	var endTimeSolidity = startTimeSolidity + 3*dayInsecond;
 
 		// 35% for presale/reserve etc... and 15% for vesting.
 	const tokenInitialDistributionAddresses = [ multiSigWallet, vestingWallet ];
@@ -58,6 +62,10 @@ contract('Creation Token Sale', function(accounts) {
 	var requestQuark;
 
 	it("Create regular crowdsale", async function() {
+		currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+		startTimeSolidity = currentTimeStamp + 2*dayInsecond;
+		endTimeSolidity = startTimeSolidity + 3*dayInsecond;
+
 		// create de crowdsale
 		requestCrowdsale = await RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
 		// retrieve the Token itself
@@ -87,6 +95,7 @@ contract('Creation Token Sale', function(accounts) {
 
 
 	it("Create crowdsale with wrong parameters", async function() {
+
 		// startTime before now	opcode
 		const startTimeBeforeNow = new Date("2016-10-13").getTime();
 		const startTimeBeforeNowSolidity = Math.floor(startTimeBeforeNow/1000);
@@ -117,15 +126,12 @@ contract('Creation Token Sale', function(accounts) {
 
 
 	it("Modify individual base cap 2days before", async function() {
-
-		const startTimeIn2days = Date.now() + 2*day;
-		const endTimeStartPlus7days = startTimeIn2days + 7*day;
-			// translate date in Second for solidity
-		const startTimeIn2daysSolidity = Math.floor(startTimeIn2days/1000);
-		const endTimeStartPlus7daysSolidity = Math.floor(endTimeStartPlus7days/1000);
+		const currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+		const startTimeIn2daysSolidity = currentTimeStamp + 2*dayInsecond;
+		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
 
 		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus7daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
+		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
 		// retrieve the Token itself
 		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
 
@@ -146,28 +152,51 @@ contract('Creation Token Sale', function(accounts) {
 		// Update ind base cap to 0
 		await requestCrowdsale.setBaseEthCapPerAddress(web3.toWei(0, "ether"),{from:admin});
 		assert.equal(await requestCrowdsale.baseEthCapPerAddress.call(), 0, "baseEthCapPerAddress is wrong");
-
 	});
 
 	it("Modify individual base cap less than 1day before", async function() {
-		const startTimeIn1days = Date.now() + 1*day;
-		const endTimeStartPlus7days = startTimeIn1days + 7*day;
-			// translate date in Second for solidity
-		const startTimeIn2daysSolidity = Math.floor(startTimeIn1days/1000);
-		const endTimeStartPlus7daysSolidity = Math.floor(endTimeStartPlus7days/1000);
+		const currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+		const startTimeIn2daysSolidity = currentTimeStamp + 2*dayInsecond;
+		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
 
 		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus7daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
+		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
 		// retrieve the Token itself
 		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
 
 		var baseCapPerAddressWei = web3.toWei(10, "ether");
 
+		addsDayOnEVM(1);
+
 			// Update ind base cap less than 24h before sale start	opcode
 		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin}));
-
-		// TODO Update ind base cap after sale started => opcode
 	});
+
+	it("Update ind base cap after sale started => opcode", async function() {
+		const currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+		const startTimeIn2daysSolidity = currentTimeStamp + 1*dayInsecond;
+		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
+
+		// create de crowdsale
+		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
+		// retrieve the Token itself
+		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
+
+		var baseCapPerAddressWei = web3.toWei(10, "ether");
+
+		addsDayOnEVM(6);
+
+			// Update ind base cap less than 24h before sale start	opcode
+		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin}));
+	});
+
+
+	var addsDayOnEVM = async function(days) {
+		var daysInsecond = 60 * 60 * 24 * days 
+		var currentBlockTime = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+		await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_increaseTime", params: [daysInsecond], id: 0});
+		await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
+	}
 
 });
 

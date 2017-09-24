@@ -1,3 +1,4 @@
+
 var RequestCrowdsale = artifacts.require("./RequestCrowdsale.sol");
 var RequestQuark = artifacts.require("./RequestQuark.sol");
 var BigNumber = require('bignumber.js');
