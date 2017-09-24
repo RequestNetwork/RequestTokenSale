@@ -17,6 +17,7 @@ import '../ownership/Ownable.sol';
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
 
   uint public constant TIME_PERIOD_IN_SEC = 1 days;
+  uint public constant GAS_LIMIT_IN_WEI = 50000000000 wei; // limit gas price -50 Gwei wales stopper
   uint256 public baseEthCapPerAddress = 0 ether;
 
   // the white list
@@ -29,17 +30,12 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
     constant 
     returns(bool) 
   {
-    // not possible to buy until the sale start
-    if (block.timestamp < startTime || startTime == 0) return false;
-
-    // limit gas price -50 Gwei wales stopper
-    require( tx.gasprice <= 50000000000 wei );
+    // limit gas price - wales stopper
+    require( tx.gasprice <= GAS_LIMIT_IN_WEI);
 
     //  indivdual cap like 0xProject did
-    uint timeSinceStartInSec = block.timestamp.sub(startTime);
-    uint currentPeriod = timeSinceStartInSec.div(TIME_PERIOD_IN_SEC).add(1);
-    uint ethCapPerAddress = (2 ** currentPeriod).mul(baseEthCapPerAddress);
-    
+    uint ethCapPerAddress = getCurrentEthCapPerAddress();
+
     // update the participation (add will throw if overflow)
     participated[msg.sender] = participated[msg.sender].add(msg.value);
 
@@ -53,6 +49,17 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
     only24HBeforeSale
   {
     baseEthCapPerAddress = _baseEthCapPerAddress;
+  }
+
+  //  indivdual cap like 0xProject did
+  function getCurrentEthCapPerAddress() 
+    public
+    returns(uint)
+  {
+    if (block.timestamp < startTime || startTime == 0) return 0;
+    uint timeSinceStartInSec = block.timestamp.sub(startTime);
+    uint currentPeriod = timeSinceStartInSec.div(TIME_PERIOD_IN_SEC).add(1);
+    return (2 ** currentPeriod.sub(1)).mul(baseEthCapPerAddress);
   }
 }
   

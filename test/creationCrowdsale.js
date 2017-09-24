@@ -1,3 +1,4 @@
+return;
 var RequestCrowdsale = artifacts.require("./RequestCrowdsale.sol");
 var RequestQuark = artifacts.require("./RequestQuark.sol");
 var BigNumber = require('bignumber.js');
@@ -43,7 +44,7 @@ contract('Creation Token Sale', function(accounts) {
 	const capCrowdsaleInWei = web3.toWei(capCrowdsaleInETH, "ether");
 
 	const startTimeTimestampJS = new Date("2017-10-13").getTime();
-	const endTimeTimestampJS 	= new Date("2017-10-20").getTime();
+	const endTimeTimestampJS 	= new Date("2017-10-17").getTime();
 		// translate date in Second for solidity
 	const startTimeSolidity = Math.floor(startTimeTimestampJS/1000);
 	const endTimeSolidity = Math.floor(endTimeTimestampJS/1000);

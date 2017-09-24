@@ -33,11 +33,10 @@ contract StandardCrowdsale {
   /**
    * event for token purchase logging
    * @param purchaser who paid for the tokens
-   * @param beneficiary who got the tokens
    * @param value weis paid for purchase
    * @param amount amount of tokens purchased
    */
-  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+  event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
   function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount) {
     require(_startTime >= now);
@@ -65,16 +64,15 @@ contract StandardCrowdsale {
   function () 
     payable 
   {
-    buyTokens(msg.sender);
+    buyTokens();
   }
 
   // low level token purchase function
   // REQUEST-NOTE : change to not mint but transfer from this contract
-  function buyTokens(address beneficiary) 
+  function buyTokens() 
     public 
     payable 
   {
-    require(beneficiary != 0x0);
     require(validPurchase());
 
     uint256 weiAmount = msg.value;
@@ -85,8 +83,8 @@ contract StandardCrowdsale {
     // update state
     weiRaised = weiRaised.add(weiAmount);
 
-    token.transfer(beneficiary, tokens); // REQUEST-NOTE : changed here
-    TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
+    token.transfer(msg.sender, tokens); // REQUEST-NOTE : changed here
+    TokenPurchase(msg.sender, weiAmount, tokens);
 
     forwardFunds();
   }
