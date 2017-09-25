@@ -8,15 +8,14 @@ import "./RequestQuark.sol";
 
 /**
  * @title RequestCrowdsale
- * @dev This is an example of a fully fledged crowdsale.
- * The way to add new features to a base crowdsale is by multiple inheritance.
- * We are providing following extensions:
+ * @dev 
+ * We add new features to a base crowdsale using multiple inheritance.
+ * We are using the following extensions:
  * CappedCrowdsale - sets a max boundary for raised funds
- * WhitelistedCrowdsale - add a whiteliste
- * ProgessiveIndividualCappedCrowdsale - add a Progressive individual cap
+ * WhitelistedCrowdsale - add a whitelist
+ * ProgressiveIndividualCappedCrowdsale - add a Progressive individual cap
  *
- * After adding multiple features it's good practice to run integration tests
- * to ensure that subcontracts works together as intended.
+ * The code is based on the contracts of Open Zeppelin and we add our contracts : RequestCrowdsale, WhiteListedCrowdsale, ProgressiveIndividualCappedCrowdsale and the Request Token
  */
 contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
 
@@ -26,10 +25,9 @@ contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     CappedCrowdsale(_cap)
     StandardCrowdsale(_startTime, _endTime, _rate, _wallet, _tokenTotalAmount)
   {
-    // send the token to specific peoples before the sale
     require(tokenInitialDistributionAddresses.length == tokenInitialDistributionAmounts.length);
 
-    // check taht the cap meet the number of token remaining for the sale
+    // verify that the cap*rate is equal to the number of tokens owned by the contract.
     require(_cap.mul(_rate) == numberTokenForSale(_tokenTotalAmount,tokenInitialDistributionAmounts));
 
     for(uint8 i=0; i<tokenInitialDistributionAddresses.length ;i++) {
@@ -37,7 +35,7 @@ contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     }
   }
 
-  // overide Crowdsale.createTokenContract to create RequestQuark token
+  // override Crowdsale.createTokenContract to create RequestQuark token
   function createTokenContract(uint _tokenTotalAmount, address _admin) 
     internal 
     returns(StandardToken) 

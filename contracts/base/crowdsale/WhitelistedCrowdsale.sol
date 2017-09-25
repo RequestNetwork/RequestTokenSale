@@ -10,12 +10,12 @@ import '../ownership/Ownable.sol';
  *
  */
 contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
-  // the white list
+  
   mapping(address=>bool) public registered;
 
   event RegistrationStatusChanged( address target, bool isRegistered );
 
-  /// @dev Changes registration status of an address for participation. 0x style
+  /// @dev Changes registration status of an address for participation.
   /// @param target Address that will be registered/deregistered.
   /// @param isRegistered New registration status of address.
   function changeRegistrationStatus(address target, bool isRegistered)
@@ -27,9 +27,9 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
       RegistrationStatusChanged( target, isRegistered );
   }
 
-  /// @dev Changes registration statuses of addresses for participation. 0x style
+  /// @dev Changes registration statuses of addresses for participation.
   /// @param targets Addresses that will be registered/deregistered.
-  /// @param isRegistered New registration status of addresss.
+  /// @param isRegistered New registration status of addresses.
   function changeRegistrationStatuses(address[] targets, bool isRegistered)
       public
       onlyOwner

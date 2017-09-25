@@ -5,44 +5,34 @@ import "../token/StandardToken.sol";
 import '../ownership/Ownable.sol';
 
 /**
- * @title RequestCrowdsale
- * @dev This is an example of a fully fledged crowdsale.
- * The way to add new features to a base crowdsale is by multiple inheritance.
- * In this example we are providing following extensions:
- * CappedCrowdsale - sets a max boundary for raised funds
- *
- * After adding multiple features it's good practice to run integration tests
- * to ensure that subcontracts works together as intended.
+ * @title ProgressiveIndividualCappedCrowdsale
+ * @dev Extension of Crowdsale with a progressive individual cap
+ * @author vrolland@Request
  */
+
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
 
   uint public constant TIME_PERIOD_IN_SEC = 1 days;
   uint public constant GAS_LIMIT_IN_WEI = 50000000000 wei; // limit gas price -50 Gwei wales stopper
   uint256 public baseEthCapPerAddress = 0 ether;
 
-  // the white list
   mapping(address=>uint) public participated;
 
-  // overriding CappedCrowdsale#validPurchase to add indivdual cap
-  // @return true if investors can buy at the moment, false otherwise
+  // @dev overriding CappedCrowdsale#validPurchase to add an individual cap
+  // @return true if investors can buy at the moment
   function validPurchase() 
     internal 
     constant 
     returns(bool) 
   {
-    // limit gas price - wales stopper
     require( tx.gasprice <= GAS_LIMIT_IN_WEI);
-
-    //  indivdual cap like 0xProject did
     uint ethCapPerAddress = getCurrentEthCapPerAddress();
-
-    // update the participation (add will throw if overflow)
     participated[msg.sender] = participated[msg.sender].add(msg.value);
-
-    // participation will be rollback if it overpass the individual cap
     return super.validPurchase() && participated[msg.sender] <= ethCapPerAddress;
   }
 
+  // @dev Set the individual cap for the first day. This function can not be called withing the 24h before the sale for security reasons
+  // @param _baseEthCapPerAddress base cap in wei
   function setBaseEthCapPerAddress(uint256 _baseEthCapPerAddress) 
     public
     onlyOwner 
@@ -51,7 +41,8 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
     baseEthCapPerAddress = _baseEthCapPerAddress;
   }
 
-  //  indivdual cap like 0xProject did
+  // @dev Get the current individual cap. 
+  // This amount increase everyday in an exponential way. Day 1: base cap, Day 2: 2 * base cap, Day 3: 4 * base cap ...
   function getCurrentEthCapPerAddress() 
     public
     returns(uint)
