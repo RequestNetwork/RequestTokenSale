@@ -1,6 +1,6 @@
-
-var RequestCrowdsale = artifacts.require("./RequestCrowdsale.sol");
-var RequestQuark = artifacts.require("./RequestQuark.sol");
+return;
+var RequestTokenSale = artifacts.require("./RequestTokenSale.sol");
+var RequestToken = artifacts.require("./RequestToken.sol");
 var BigNumber = require('bignumber.js');
 
 var expectThrow = async function(promise) {
@@ -23,17 +23,18 @@ var expectThrow = async function(promise) {
 contract('Creation Token Sale', function(accounts) {
 	// account setting ----------------------------------------------------------------------
 	var admin = accounts[0];
-	var multiSigWallet = accounts[1];
-	var vestingWallet = accounts[2];
+	var foundationWallet = accounts[1];
+	var earlyInvestorWallet = accounts[2];
+	var vestingWallet = accounts[3];
 
-	var randomGuy1 = accounts[3];
+	var randomGuy1 = accounts[4];
 	// tool const ----------------------------------------------------------------------------
 	const day = 60 * 60 * 24 * 1000;
 	const dayInsecond = 60 * 60 * 24;
 	const second = 1000;
 
 	// crowdsale setting ---------------------------------------------------------------------
-	const name = "Request Quark";
+	const name = "Request Token";
 	const symbol = "REQ";
 	const decimals = 18;
 	const amountTokenSupply = 1000000000;
@@ -44,22 +45,27 @@ contract('Creation Token Sale', function(accounts) {
 		// setting in wei for solidity
 	const capCrowdsaleInWei = web3.toWei(capCrowdsaleInETH, "ether");
 
-	// const startTimeTimestampJS = new Date("2017-10-13").getTime();
-	// const endTimeTimestampJS 	= new Date("2017-10-17").getTime();
-	// 	// translate date in Second for solidity
-	// const startTimeSolidity = Math.floor(startTimeTimestampJS/1000);
-	// const endTimeSolidity = Math.floor(endTimeTimestampJS/1000);
-	var currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-	var startTimeSolidity = currentTimeStamp + 2*dayInsecond;
-	var endTimeSolidity = startTimeSolidity + 3*dayInsecond;
+	var currentTimeStamp;
+	var startTimeSolidity;
+	var endTimeSolidity;
 
-		// 35% for presale/reserve etc... and 15% for vesting.
-	const tokenInitialDistributionAddresses = [ multiSigWallet, vestingWallet ];
-	const tokenInitialDistributionAmounts = [ amountTokenSupplySolidity.mul(35).div(100), amountTokenSupplySolidity.mul(15).div(100)  ];
+	// Token initialy distributed for the team (15%)
+	const TEAM_VESTING_WALLET = vestingWallet;
+	const TEAM_VESTING_AMOUNT = 150000000;
+
+	// Token initialy distributed for the early investor (20%)
+	const EARLY_INVESTOR_WALLET = earlyInvestorWallet;
+	const EARLY_INVESTOR_AMOUNT = 200000000;
+
+	// Token initialy distributed for the early foundation (15%)
+	// wallet use also to gather the ether of the token sale
+	const REQUEST_FOUNDATION_WALLET = foundationWallet;
+	const REQUEST_FOUNDATION_AMOUNT = 150000000;
+
 
     // variable to host contracts ------------------------------------------------------------
-	var requestCrowdsale;
-	var requestQuark;
+	var requestTokenSale;
+	var requestToken;
 
 	it("Create regular crowdsale", async function() {
 		currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
@@ -67,30 +73,31 @@ contract('Creation Token Sale', function(accounts) {
 		endTimeSolidity = startTimeSolidity + 3*dayInsecond;
 
 		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
+		requestTokenSale = await RequestTokenSale.new(startTimeSolidity, endTimeSolidity);
 		// retrieve the Token itself
-		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
+		requestToken = await RequestToken.at(await requestTokenSale.token.call());
 
 		// Crowdsale 
-		assert((await requestCrowdsale.cap.call()).equals(capCrowdsaleInWei), "cap is wrong");
-		assert.equal(await requestCrowdsale.rate.call(), rateETHREQ, "rate is wrong");
-		assert.equal(await requestCrowdsale.baseEthCapPerAddress.call(), 0, "baseEthCapPerAddress is wrong");
-		assert.equal(await requestCrowdsale.startTime.call(), startTimeSolidity, "startTime is wrong");
-		assert.equal(await requestCrowdsale.endTime.call(), endTimeSolidity, "endTime is wrong");
-		assert.equal(await requestCrowdsale.wallet.call(), multiSigWallet, "wallet is wrong");
-		assert.equal(await requestCrowdsale.weiRaised.call(), 0, "weiRaised is wrong");
-		assert.equal(await requestCrowdsale.owner.call(), admin, "owner is wrong");
+		assert((await requestTokenSale.cap.call()).equals(capCrowdsaleInWei), "cap is wrong");
+		assert.equal(await requestTokenSale.rate.call(), rateETHREQ, "rate is wrong");
+		assert.equal(await requestTokenSale.baseEthCapPerAddress.call(), 0, "baseEthCapPerAddress is wrong");
+		assert.equal(await requestTokenSale.startTime.call(), startTimeSolidity, "startTime is wrong");
+		assert.equal(await requestTokenSale.endTime.call(), endTimeSolidity, "endTime is wrong");
+		assert.equal(await requestTokenSale.wallet.call(), foundationWallet, "wallet is wrong");
+		assert.equal(await requestTokenSale.weiRaised.call(), 0, "weiRaised is wrong");
+		assert.equal(await requestTokenSale.owner.call(), admin, "owner is wrong");
 
 		// Token
-		assert.equal(await requestQuark.name.call(), name, "name is wrong");
-		assert.equal(await requestQuark.symbol.call(), symbol, "symbol is wrong");
-		assert.equal(await requestQuark.decimals.call(), decimals, "decimals is wrong");
-		assert.equal(await requestQuark.owner.call(), multiSigWallet, "owner is wrong");
+		assert.equal(await requestToken.name.call(), name, "name is wrong");
+		assert.equal(await requestToken.symbol.call(), symbol, "symbol is wrong");
+		assert.equal(await requestToken.decimals.call(), decimals, "decimals is wrong");
+		assert.equal(await requestToken.owner.call(), foundationWallet, "owner is wrong");
 
-		assert((await requestQuark.totalSupply.call()).equals(amountTokenSupplySolidity), "totalSupply is wrong");
-		assert((new BigNumber(10).pow(18)).mul(500000000).equals(await requestQuark.balanceOf(requestCrowdsale.address)), "requestCrowdsale.address balance");
-		assert((new BigNumber(10).pow(18)).mul(350000000).equals(await requestQuark.balanceOf(multiSigWallet)), "multiSigWallet balance");
-		assert((new BigNumber(10).pow(18)).mul(150000000).equals(await requestQuark.balanceOf(vestingWallet)), "vestingWallet balance");
+		assert((await requestToken.totalSupply.call()).equals(amountTokenSupplySolidity), "totalSupply is wrong");
+		assert((new BigNumber(10).pow(18)).mul(500000000).equals(await requestToken.balanceOf(requestTokenSale.address)), "requestTokenSale.address balance");
+		assert((new BigNumber(10).pow(18)).mul(REQUEST_FOUNDATION_AMOUNT).equals(await requestToken.balanceOf(foundationWallet)), "foundationWallet balance");
+		assert((new BigNumber(10).pow(18)).mul(TEAM_VESTING_AMOUNT).equals(await requestToken.balanceOf(vestingWallet)), "vestingWallet balance");
+		assert((new BigNumber(10).pow(18)).mul(EARLY_INVESTOR_AMOUNT).equals(await requestToken.balanceOf(earlyInvestorWallet)), "earlyInvestorWallet balance");
 	});
 
 
@@ -99,29 +106,12 @@ contract('Creation Token Sale', function(accounts) {
 		// startTime before now	opcode
 		const startTimeBeforeNow = new Date("2016-10-13").getTime();
 		const startTimeBeforeNowSolidity = Math.floor(startTimeBeforeNow/1000);
-		await expectThrow(RequestCrowdsale.new(startTimeBeforeNowSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts));
+		await expectThrow(RequestTokenSale.new(startTimeBeforeNowSolidity, endTimeSolidity));
 
 		// endTime before startTime	opcode
 		const endBeforeStart = new Date("2017-10-11").getTime();
 		const endBeforeStartSolidity = Math.floor(endBeforeStart/1000);
-		await expectThrow(RequestCrowdsale.new(startTimeSolidity, endBeforeStartSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts));
-
-		// cap*rate != totalToken – tokenReserved	opcode
-		const capCrowdsaleInWeiWrong = web3.toWei(99999, "ether");
-		await expectThrow(RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWeiWrong, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts));
-		const tokenInitialDistributionAmountsWrong = [ amountTokenSupplySolidity.mul(36).div(100), amountTokenSupplySolidity.mul(15).div(100)  ];
-		await expectThrow(RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmountsWrong));
-
-		// size tokenBeforeSaleAddress!= size tokenBeforeSaleAmount	opcode
-		const tokenInitialDistributionAddressesWrongSize = [ multiSigWallet, vestingWallet, admin  ];
-		await expectThrow(RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddressesWrongSize, tokenInitialDistributionAmounts));
-
-
-		// t vesting + t multi + t sell != t total supply	opcode
-		const capCrowdsaleInWeiWrong0 = web3.toWei(0, "ether");
-		const tokenInitialDistributionAmountsWrong101percent = [ amountTokenSupplySolidity.mul(100).div(100), amountTokenSupplySolidity.mul(1).div(100)  ];
-		await expectThrow(RequestCrowdsale.new(startTimeSolidity, endTimeSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWeiWrong0, tokenInitialDistributionAddresses, tokenInitialDistributionAmountsWrong101percent));
-
+		await expectThrow(RequestTokenSale.new(startTimeSolidity, endBeforeStartSolidity));
 	});
 
 
@@ -131,72 +121,29 @@ contract('Creation Token Sale', function(accounts) {
 		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
 
 		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
+		requestTokenSale = await RequestTokenSale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity);
 		// retrieve the Token itself
-		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
+		requestToken = await RequestToken.at(await requestTokenSale.token.call());
 
 		var baseCapPerAddressWei = web3.toWei(10, "ether");
 
 			// Update ind base cap by admin	
 			// Update ind base cap 2days before sale start
-		await requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin});
-		assert((await requestCrowdsale.baseEthCapPerAddress.call()).equals(baseCapPerAddressWei), "baseEthCapPerAddress is wrong");
+		await requestTokenSale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin});
+		assert((await requestTokenSale.baseEthCapPerAddress.call()).equals(baseCapPerAddressWei), "baseEthCapPerAddress is wrong");
 
 		// Update ind base cap by random guy opcode	
-		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:randomGuy1}));
+		await expectThrow(requestTokenSale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:randomGuy1}));
 		// Update ind base cap by multisig opcode
-		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:multiSigWallet}));
+		await expectThrow(requestTokenSale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:foundationWallet}));
 		// Update ind base cap by vesting opcode
-		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:vestingWallet}));
+		await expectThrow(requestTokenSale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:vestingWallet}));
 
 		// Update ind base cap to 0
-		await requestCrowdsale.setBaseEthCapPerAddress(web3.toWei(0, "ether"),{from:admin});
-		assert.equal(await requestCrowdsale.baseEthCapPerAddress.call(), 0, "baseEthCapPerAddress is wrong");
+		await requestTokenSale.setBaseEthCapPerAddress(web3.toWei(0, "ether"),{from:admin});
+		assert.equal(await requestTokenSale.baseEthCapPerAddress.call(), 0, "baseEthCapPerAddress is wrong");
 	});
 
-	it("Modify individual base cap less than 1day before", async function() {
-		const currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-		const startTimeIn2daysSolidity = currentTimeStamp + 2*dayInsecond;
-		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
-
-		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
-		// retrieve the Token itself
-		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
-
-		var baseCapPerAddressWei = web3.toWei(10, "ether");
-
-		addsDayOnEVM(1);
-
-			// Update ind base cap less than 24h before sale start	opcode
-		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin}));
-	});
-
-	it("Update ind base cap after sale started => opcode", async function() {
-		const currentTimeStamp = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-		const startTimeIn2daysSolidity = currentTimeStamp + 1*dayInsecond;
-		const endTimeStartPlus3daysSolidity = startTimeIn2daysSolidity + 3*dayInsecond;
-
-		// create de crowdsale
-		requestCrowdsale = await RequestCrowdsale.new(startTimeIn2daysSolidity, endTimeStartPlus3daysSolidity, rateETHREQ, multiSigWallet, amountTokenSupplySolidity, capCrowdsaleInWei, tokenInitialDistributionAddresses, tokenInitialDistributionAmounts);
-		// retrieve the Token itself
-		requestQuark = await RequestQuark.at(await requestCrowdsale.token.call());
-
-		var baseCapPerAddressWei = web3.toWei(10, "ether");
-
-		addsDayOnEVM(6);
-
-			// Update ind base cap less than 24h before sale start	opcode
-		await expectThrow(requestCrowdsale.setBaseEthCapPerAddress(baseCapPerAddressWei,{from:admin}));
-	});
-
-
-	var addsDayOnEVM = async function(days) {
-		var daysInsecond = 60 * 60 * 24 * days 
-		var currentBlockTime = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-		await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_increaseTime", params: [daysInsecond], id: 0});
-		await web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0});
-	}
 
 });
 

@@ -38,22 +38,23 @@ contract StandardCrowdsale {
    */
   event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
-  function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount) {
+  function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
     require(_startTime >= now);
     require(_endTime >= _startTime);
     require(_rate > 0);
     require(_wallet != 0x0);
 
-    token = createTokenContract(_tokenTotalAmount, _wallet); // REQUEST-NOTE : change to not mintable and accept parameters
     startTime = _startTime;
     endTime = _endTime;
     rate = _rate;
     wallet = _wallet;
+
+    token = createTokenContract(); // REQUEST-NOTE : change to StandardToken
   }
 
   // creates the token to be sold.
-  // REQUEST-NOTE : change to not mint and accept parameters
-  function createTokenContract(uint _tokenTotalAmount, address _wallet) 
+  // REQUEST-NOTE : change to StandardToken
+  function createTokenContract() 
     internal 
     returns(StandardToken) 
   {
