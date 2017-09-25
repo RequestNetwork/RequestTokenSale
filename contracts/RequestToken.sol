@@ -17,7 +17,7 @@ contract RequestToken is StandardToken, Ownable {
 
     modifier onlyWhenTransferEnabled() {
         if( now <= transferableStartTime ) {
-            require( msg.sender == tokenSaleContract || msg.sender == earlyInvestorWallet );
+            require( msg.sender == tokenSaleContract || msg.sender == earlyInvestorWallet || msg.sender == owner  );
         }
         _;
     }
