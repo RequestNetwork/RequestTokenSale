@@ -3,9 +3,9 @@ pragma solidity ^0.4.13;
 import './base/token/StandardToken.sol';
 import './base/ownership/Ownable.sol';
 
-// Request Network Quark (Kyber Style)
-contract RequestQuark is StandardToken, Ownable {
-    string  public  constant name = "Request Quark";
+// Request Network Token (Kyber Style)
+contract RequestToken is StandardToken, Ownable {
+    string  public  constant name = "Request Token";
     string  public  constant symbol = "REQ";
     uint    public  constant decimals = 18;
 
@@ -27,7 +27,7 @@ contract RequestQuark is StandardToken, Ownable {
     //     _;
     // }
 
-    function RequestQuark( uint tokenTotalAmount, /*uint startTime, uint endTime, */address admin ) {
+    function RequestToken( uint tokenTotalAmount, /*uint startTime, uint endTime, */address admin ) {
         // Mint all tokens. Then disable minting forever.
         balances[msg.sender] = tokenTotalAmount;
         totalSupply = tokenTotalAmount;

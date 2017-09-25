@@ -4,10 +4,10 @@ import "./base/crowdsale/CappedCrowdsale.sol";
 import "./base/crowdsale/WhitelistedCrowdsale.sol";
 import "./base/crowdsale/ProgressiveIndividualCappedCrowdsale.sol";
 import "./base/token/StandardToken.sol";
-import "./RequestQuark.sol";
+import "./RequestToken.sol";
 
 /**
- * @title RequestCrowdsale
+ * @title RequestTokenSale
  * @dev 
  * We add new features to a base crowdsale using multiple inheritance.
  * We are using the following extensions:
@@ -15,9 +15,9 @@ import "./RequestQuark.sol";
  * WhitelistedCrowdsale - add a whitelist
  * ProgressiveIndividualCappedCrowdsale - add a Progressive individual cap
  *
- * The code is based on the contracts of Open Zeppelin and we add our contracts : RequestCrowdsale, WhiteListedCrowdsale, ProgressiveIndividualCappedCrowdsale and the Request Token
+ * The code is based on the contracts of Open Zeppelin and we add our contracts : RequestTokenSale, WhiteListedCrowdsale, ProgressiveIndividualCappedCrowdsale and the Request Token
  */
-contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
+contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
 
   // hard cap of the token sale in ether
   uint public constant HARD_CAP_IN_ETHER = 100000;
@@ -41,7 +41,7 @@ contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
   address public constant REQUEST_FOUNDATION_WALLET = 0x0000000000000000;
   address public constant REQUEST_FOUNDATION_AMOUNT = 150000000;
 
-  function RequestCrowdsale(uint256 _startTime, uint256 _endTime)
+  function RequestTokenSale(uint256 _startTime, uint256 _endTime)
     ProgressiveIndividualCappedCrowdsale()
     WhitelistedCrowdsale()
     CappedCrowdsale(HARD_CAP_IN_ETHER)
