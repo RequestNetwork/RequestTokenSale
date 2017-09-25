@@ -19,20 +19,35 @@ import "./RequestQuark.sol";
  */
 contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
 
-  function RequestCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint256 _tokenTotalAmount, uint256 _cap, address[] tokenInitialDistributionAddresses, uint256[] tokenInitialDistributionAmounts)
+  // hard cap of the token sale in ether
+  uint public constant HARD_CAP_IN_ETHER = 100000;
+
+  // Total of Request Token supply
+  uint public constant TOTAL_REQUEST_TOKEN_SUPPLY = 1000000000;
+
+  // Token sale rate from ETH to REQ
+  uint public constant RATE_ETH_REQ = 5000;
+
+  // Token initialy distributed for the team (15%)
+  address public constant TEAM_VESTING_WALLET = 0x0000000000000000;
+  address public constant TEAM_VESTING_AMOUNT = 150000000;
+
+  // Token initialy distributed for the early investor (20%)
+  address public constant EARLY_INVESTOR_WALLET = 0x0000000000000000;
+  address public constant EARLY_INVESTOR_AMOUNT = 200000000;
+
+  // Token initialy distributed for the early foundation (15%)
+  // wallet use also to gather the ether of the token sale
+  address public constant REQUEST_FOUNDATION_WALLET = 0x0000000000000000;
+  address public constant REQUEST_FOUNDATION_AMOUNT = 150000000;
+
+  function RequestCrowdsale(uint256 _startTime, uint256 _endTime)
     ProgressiveIndividualCappedCrowdsale()
     WhitelistedCrowdsale()
-    CappedCrowdsale(_cap)
-    StandardCrowdsale(_startTime, _endTime, _rate, _wallet, _tokenTotalAmount)
+    CappedCrowdsale(HARD_CAP_IN_ETHER)
+    StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET, TOTAL_REQUEST_TOKEN_SUPPLY)
   {
-    require(tokenInitialDistributionAddresses.length == tokenInitialDistributionAmounts.length);
-
-    // verify that the cap*rate is equal to the number of tokens owned by the contract.
-    require(_cap.mul(_rate) == numberTokenForSale(_tokenTotalAmount,tokenInitialDistributionAmounts));
-
-    for(uint8 i=0; i<tokenInitialDistributionAddresses.length ;i++) {
-      token.transfer(tokenInitialDistributionAddresses[i], tokenInitialDistributionAmounts[i]);
-    }
+    // nothing to do here
   }
 
   // override Crowdsale.createTokenContract to create RequestQuark token
@@ -42,18 +57,5 @@ contract RequestCrowdsale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
   {
     return new RequestQuark(_tokenTotalAmount, _admin);
   }
-
-  // INTERNAL : Compute the number of token remaining for Sale - only use in constructor
-  function numberTokenForSale(uint256 _totalSupplyToken, uint256[] _tokenInitialDistributionAmounts) 
-    internal 
-    returns(uint256) 
-  {
-    uint256 totalForSale = _totalSupplyToken;
-    for(uint8 i=0; i<_tokenInitialDistributionAmounts.length ;i++) {
-      totalForSale -= _tokenInitialDistributionAmounts[i];
-    }
-    return totalForSale;
-  }
-
 }
   
