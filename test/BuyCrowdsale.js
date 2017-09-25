@@ -1,4 +1,4 @@
-
+return;
 var RequestTokenSale = artifacts.require("./RequestTokenSale.sol");
 var RequestToken = artifacts.require("./RequestToken.sol");
 var BigNumber = require('bignumber.js');

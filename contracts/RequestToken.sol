@@ -9,51 +9,44 @@ contract RequestToken is StandardToken, Ownable {
     string  public  constant symbol = "REQ";
     uint    public  constant decimals = 18;
 
-    // uint    public  saleStartTime;
-    // uint    public  saleEndTime;
+    uint    public  transferableStartTime;
 
-    // address public  tokenSaleContract;
+    address public  tokenSaleContract;
+    address public  earlyInvestorWallet;
 
-    // modifier onlyWhenTransferEnabled() {
-    //     if( now <= saleEndTime && now >= saleStartTime ) {
-    //         require( msg.sender == tokenSaleContract );
-    //     }
-    //     _;
-    // }
 
-    // modifier validDestination( address to ) {
-    //     require(to != address(0x0)); // TODO : ARE WE ABLE TO BURN TOKEN ?
-    //     require(to != address(this) );
-    //     _;
-    // }
+    modifier onlyWhenTransferEnabled() {
+        if( now <= transferableStartTime ) {
+            require( msg.sender == tokenSaleContract || msg.sender == earlyInvestorWallet );
+        }
+        _;
+    }
 
-    function RequestToken( uint tokenTotalAmount, /*uint startTime, uint endTime, */address admin ) {
+    function RequestToken( uint tokenTotalAmount, uint _transferableStartTime, address _admin, address _earlyInvestorWallet) {
         // Mint all tokens. Then disable minting forever.
         totalSupply = tokenTotalAmount * (10 ** uint256(decimals));
 
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
 
-        // saleStartTime = startTime;
-        // saleEndTime = endTime;
+        transferableStartTime = _transferableStartTime;
+        tokenSaleContract = msg.sender;
+        earlyInvestorWallet = _earlyInvestorWallet;
 
-        // tokenSaleContract = msg.sender;
-        transferOwnership(admin); // admin could drain tokens and eth that were sent here by mistake
+        transferOwnership(_admin); // admin could drain tokens and eth that were sent here by mistake
     }
 
-    // function transfer(address _to, uint _value)
-    //     // onlyWhenTransferEnabled
-    //     // validDestination(_to)
-    //     returns (bool) {
-    //     return super.transfer(_to, _value);
-    // }
+    function transfer(address _to, uint _value)
+        onlyWhenTransferEnabled
+        returns (bool) {
+        return super.transfer(_to, _value);
+    }
 
-    // function transferFrom(address _from, address _to, uint _value)
-    //     // onlyWhenTransferEnabled
-    //     // validDestination(_to)
-    //     returns (bool) {
-    //     return super.transferFrom(_from, _to, _value);
-    // }
+    function transferFrom(address _from, address _to, uint _value)
+        onlyWhenTransferEnabled
+        returns (bool) {
+        return super.transferFrom(_from, _to, _value);
+    }
 
     function emergencyERC20Drain( ERC20 token, uint amount ) 
         onlyOwner 

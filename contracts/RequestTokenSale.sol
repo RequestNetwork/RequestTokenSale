@@ -30,16 +30,20 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
 
   // Token initialy distributed for the team (15%)
   address public constant TEAM_VESTING_WALLET = 0x095f32f02282a043c709bbc45854e72965e94bf2;
-  uint256 public constant TEAM_VESTING_AMOUNT = 150000000  * (10 ** uint256(18));
+  uint public constant TEAM_VESTING_AMOUNT = 150000000  * (10 ** uint256(18));
 
   // Token initialy distributed for the early investor (20%)
   address public constant EARLY_INVESTOR_WALLET = 0xb80438e752527fa4b3d890a4192f8000025c79f9;
-  uint256 public constant EARLY_INVESTOR_AMOUNT = 200000000  * (10 ** uint256(18));
+  uint public constant EARLY_INVESTOR_AMOUNT = 200000000  * (10 ** uint256(18));
 
   // Token initialy distributed for the early foundation (15%)
   // wallet use also to gather the ether of the token sale
   address public constant REQUEST_FOUNDATION_WALLET = 0x4e96617d23a9d6d41fe706f159c0bdc7ee97db0d;
-  uint256 public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
+  uint public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
+
+  // PERIOD WHEN TOKEN IS NOT TRANSFERABLE AFTER THE SALE
+  uint public constant PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC = 3 days;
+
 
   function RequestTokenSale(uint256 _startTime, uint256 _endTime)
     ProgressiveIndividualCappedCrowdsale()
@@ -58,11 +62,12 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
   }
 
   // override Crowdsale.createTokenContract to create RequestToken token
-  function createTokenContract(uint _tokenTotalAmount, address _admin) 
+  function createTokenContract() 
     internal 
     returns(StandardToken) 
   {
-    return new RequestToken(_tokenTotalAmount, _admin);
+    // uint tokenTotalAmount, uint _transferableStartTime, address _admin, address _earlyInvestorWallet
+    return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime+PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC, REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
   }
 }
   
