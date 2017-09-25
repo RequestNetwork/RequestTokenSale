@@ -39,10 +39,10 @@ We check the cap and the whitelist.
 4. On T, the sale starts. At this point users can buy tokens according to the individual caps.
 It is possible to buy several times, as long as cap is not exceeded.
 5. On T+1, the sale continue but the individual cap is double.
-6. On T+2, the sale continue if the hard cap is not reach with a individual cap double again.
-7. On T+3, the sale continue if the hard cap is not reach with a individual cap double again.
+6. On T+2, the sale continue if the hard cap is not reached with an individual cap double again.
+7. On T+3, the sale continue if the hard cap is not reached with an individual cap double again.
 
-8. On T+4, token sale is over. (TODO : what to do if hard cap not reached?)
+8. On T+4, token sale is over. 
 
 9. on T+7, token transfers are enabled for everyone.
 
@@ -64,12 +64,11 @@ It inherits from `WhitelistedCrowdsale.sol` developped by Request, providing the
 
 It uses `SafeMath.sol` from Open Zeppelin, providing the whitelist mechanism
 
-Provides the whilelist, hard cap and individual cap mechanisme for the token sale.
 Owner can list and delist users until the last 24h before the token sale.
 Owner can modify the individual base cap until the last 24h before the token sale.
 
 Because we expect > 10k users, we must start uploading the users before we have a full list.
-For this reason we also have an optimzed version of listing which can take an array as input.
+For this reason we also have an optimized version of listing which can take an array as input.
 
 #### The token (RequestToken.sol)
 Implemented in `RequestToken.sol`. 
@@ -78,10 +77,10 @@ It inherits from `Ownable.sol` from Open Zeppelin
 It uses `SafeMath.sol` from Open Zeppelin
 
 The token is fully compatible with ERC20 standard, with the next two additions:
-1. It is impossible to transfer tokens before 3 days after the token sale end.
+1. The tokens become transferable 7 days after the token sale start.
 To be more precise, only the token sale contract, early investor multisign wallet and foundation multisign wallet are allowed to transfer tokens before.
 
-2. A draining function (for eth and ERC20 tokens), in case of.
+2. 2 draining functions (for eth and ERC20 tokens), in case of.
 
 ### Use of zeppelin code
 We use open-zeppling code for `SafeMath`, `Ownable` and `StandardToken` logic (and as base code : `StandardCrowdsale.sol`).
