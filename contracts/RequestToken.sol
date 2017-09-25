@@ -29,9 +29,10 @@ contract RequestToken is StandardToken, Ownable {
 
     function RequestToken( uint tokenTotalAmount, /*uint startTime, uint endTime, */address admin ) {
         // Mint all tokens. Then disable minting forever.
-        balances[msg.sender] = tokenTotalAmount;
-        totalSupply = tokenTotalAmount;
-        Transfer(address(0x0), msg.sender, tokenTotalAmount);
+        totalSupply = tokenTotalAmount * (10 ** uint256(decimals));
+
+        balances[msg.sender] = totalSupply;
+        Transfer(address(0x0), msg.sender, totalSupply);
 
         // saleStartTime = startTime;
         // saleEndTime = endTime;
@@ -41,15 +42,15 @@ contract RequestToken is StandardToken, Ownable {
     }
 
     // function transfer(address _to, uint _value)
-    //     onlyWhenTransferEnabled
-    //     validDestination(_to)
+    //     // onlyWhenTransferEnabled
+    //     // validDestination(_to)
     //     returns (bool) {
     //     return super.transfer(_to, _value);
     // }
 
     // function transferFrom(address _from, address _to, uint _value)
-    //     onlyWhenTransferEnabled
-    //     validDestination(_to)
+    //     // onlyWhenTransferEnabled
+    //     // validDestination(_to)
     //     returns (bool) {
     //     return super.transferFrom(_from, _to, _value);
     // }

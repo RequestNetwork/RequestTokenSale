@@ -20,7 +20,7 @@ import "./RequestToken.sol";
 contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
 
   // hard cap of the token sale in ether
-  uint public constant HARD_CAP_IN_ETHER = 100000;
+  uint public constant HARD_CAP_IN_ETHER = 100000 ether;
 
   // Total of Request Token supply
   uint public constant TOTAL_REQUEST_TOKEN_SUPPLY = 1000000000;
@@ -29,17 +29,17 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
   uint public constant RATE_ETH_REQ = 5000;
 
   // Token initialy distributed for the team (15%)
-  address public constant TEAM_VESTING_WALLET = 0x0000000000000000;
-  address public constant TEAM_VESTING_AMOUNT = 150000000;
+  address public constant TEAM_VESTING_WALLET = 0x095f32f02282a043c709bbc45854e72965e94bf2;
+  uint256 public constant TEAM_VESTING_AMOUNT = 150000000  * (10 ** uint256(18));
 
   // Token initialy distributed for the early investor (20%)
-  address public constant EARLY_INVESTOR_WALLET = 0x0000000000000000;
-  address public constant EARLY_INVESTOR_AMOUNT = 200000000;
+  address public constant EARLY_INVESTOR_WALLET = 0xb80438e752527fa4b3d890a4192f8000025c79f9;
+  uint256 public constant EARLY_INVESTOR_AMOUNT = 200000000  * (10 ** uint256(18));
 
   // Token initialy distributed for the early foundation (15%)
   // wallet use also to gather the ether of the token sale
-  address public constant REQUEST_FOUNDATION_WALLET = 0x0000000000000000;
-  address public constant REQUEST_FOUNDATION_AMOUNT = 150000000;
+  address public constant REQUEST_FOUNDATION_WALLET = 0x4e96617d23a9d6d41fe706f159c0bdc7ee97db0d;
+  uint256 public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
 
   function RequestTokenSale(uint256 _startTime, uint256 _endTime)
     ProgressiveIndividualCappedCrowdsale()
@@ -47,15 +47,22 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     CappedCrowdsale(HARD_CAP_IN_ETHER)
     StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET, TOTAL_REQUEST_TOKEN_SUPPLY)
   {
-    // nothing to do here
+    address vestingAccount = TEAM_VESTING_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
+    token.transfer(vestingAccount, TEAM_VESTING_AMOUNT);
+
+    address earlyInvestorAccount = EARLY_INVESTOR_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
+    token.transfer(earlyInvestorAccount, EARLY_INVESTOR_AMOUNT);
+
+    address requestFoundationAccount = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
+    token.transfer(requestFoundationAccount, REQUEST_FOUNDATION_AMOUNT);
   }
 
-  // override Crowdsale.createTokenContract to create RequestQuark token
+  // override Crowdsale.createTokenContract to create RequestToken token
   function createTokenContract(uint _tokenTotalAmount, address _admin) 
     internal 
     returns(StandardToken) 
   {
-    return new RequestQuark(_tokenTotalAmount, _admin);
+    return new RequestToken(_tokenTotalAmount, _admin);
   }
 }
   
