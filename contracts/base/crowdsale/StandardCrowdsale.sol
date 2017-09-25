@@ -49,7 +49,7 @@ contract StandardCrowdsale {
     rate = _rate;
     wallet = _wallet;
 
-    token = createTokenContract(); // REQUEST-NOTE : change to StandardToken
+    token = createTokenContract(); // REQUEST-NOTE : change to StandardToken + position
   }
 
   // creates the token to be sold.
@@ -84,7 +84,7 @@ contract StandardCrowdsale {
     // update state
     weiRaised = weiRaised.add(weiAmount);
 
-    token.transfer(msg.sender, tokens); // REQUEST-NOTE : changed here
+    token.transfer(msg.sender, tokens); // REQUEST-NOTE : changed here - tranfer instead of mintable
     TokenPurchase(msg.sender, weiAmount, tokens);
 
     forwardFunds();
@@ -123,6 +123,7 @@ contract StandardCrowdsale {
     _;
   }
 
+  // REQUEST-NOTE : Add check 24hours before token sale
   modifier only24HBeforeSale() {
     require(now < startTime-(1 days));
     _;
