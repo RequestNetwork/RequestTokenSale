@@ -1,4 +1,4 @@
-return;
+// return;
 var RequestTokenSale = artifacts.require("./RequestTokenSale.sol");
 var RequestToken = artifacts.require("./RequestToken.sol");
 var BigNumber = require('bignumber.js');
@@ -169,8 +169,24 @@ contract('Whitelist token sale', function(accounts) {
 		await expectThrow(requestTokenSale.changeRegistrationStatuses(listAddress, false, {from:admin}));
 	});
 	
+	it("add 2000 guys in whitelist", async function() {
+		for(var j=0;j<20;j++) {
 
+			var listAddress100 = [];
+			for(var i=1;i<=100;i++) {
+				listAddress100.push(integerToByte20str(100*j+i));
+			}
 
+			// Add 100 guys in whitelist	
+			var r = await requestTokenSale.changeRegistrationStatuses(listAddress100, true, {from:admin});
+
+			for(var i=1;i<=100;i++) {
+				assert.equal(r.logs[i-1].event, 'RegistrationStatusChanged', "event is wrong");
+				assert.equal(r.logs[i-1].args.target, listAddress100[i-1], "target is wrong");
+				assert.equal(r.logs[i-1].args.isRegistered, true, "isRegistered is wrong");
+			}
+		}
+	});
 
 
 	function integerToByte20str(int) {
