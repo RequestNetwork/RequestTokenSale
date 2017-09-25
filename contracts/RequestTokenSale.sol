@@ -49,7 +49,7 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     ProgressiveIndividualCappedCrowdsale()
     WhitelistedCrowdsale()
     CappedCrowdsale(HARD_CAP_IN_ETHER)
-    StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET, TOTAL_REQUEST_TOKEN_SUPPLY)
+    StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET)
   {
     address vestingAccount = TEAM_VESTING_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
     token.transfer(vestingAccount, TEAM_VESTING_AMOUNT);

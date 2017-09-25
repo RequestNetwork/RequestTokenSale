@@ -38,7 +38,7 @@ contract StandardCrowdsale {
    */
   event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
-  function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet, uint _tokenTotalAmount) {
+  function StandardCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
     require(_startTime >= now);
     require(_endTime >= _startTime);
     require(_rate > 0);
@@ -48,7 +48,7 @@ contract StandardCrowdsale {
     endTime = _endTime;
     rate = _rate;
     wallet = _wallet;
-    
+
     token = createTokenContract(); // REQUEST-NOTE : change to StandardToken
   }
 
