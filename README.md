@@ -53,11 +53,16 @@ The system has 2 modules : the token sale (RequestTokenSale.sol) and the token (
 
 #### The token sale (RequestTokenSale.sol)
 Implemented in `RequestTokenSale.sol`. 
-It inherits from `StandardCrowdsale.sol` from Zeppelin with small changes (see REQUEST-NOTE in comments) providing the basic check for the token sale
-It inherits from `CappedCrowdsale.sol` from Zeppelin providing the hard cap
-It inherits from `ProgressiveIndividualCappedCrowdsale.sol` dev. by Request following the zeppelin Interface, providing the progressive individual cap.
-It inherits from `WhitelistedCrowdsale.sol` dev. by Request following the zeppelin Interface
-It uses `SafeMath.sol` from Zeppelin, providing the whitelist mechanism
+
+It inherits from `StandardCrowdsale.sol` from Open Zeppelin with small changes (see REQUEST-NOTE in comments) providing the basic check for the token sale
+
+It inherits from `CappedCrowdsale.sol` from Open Zeppelin providing the hard cap
+
+It inherits from `ProgressiveIndividualCappedCrowdsale.sol` developped by Request, providing the progressive individual cap.
+
+It inherits from `WhitelistedCrowdsale.sol` developped by Request, providing the White list mechanism
+
+It uses `SafeMath.sol` from Open Zeppelin, providing the whitelist mechanism
 
 Provides the whilelist, hard cap and individual cap mechanisme for the token sale.
 Owner can list and delist users until the last 24h before the token sale.
@@ -68,15 +73,15 @@ For this reason we also have an optimzed version of listing which can take an ar
 
 #### The token (RequestToken.sol)
 Implemented in `RequestToken.sol`. 
-It inherits from `StandardToken.sol` from Zeppelin (ERC20 standard token)
-It inherits from `Ownable.sol` from Zeppelin
-It uses `SafeMath.sol` from Zeppelin
+It inherits from `StandardToken.sol` from Open Zeppelin (ERC20 standard token)
+It inherits from `Ownable.sol` from Open Zeppelin
+It uses `SafeMath.sol` from Open Zeppelin
 
 The token is fully compatible with ERC20 standard, with the next two additions:
 1. It is impossible to transfer tokens before 3 days after the token sale end.
 To be more precise, only the token sale contract, early investor multisign wallet and foundation multisign wallet are allowed to transfer tokens before.
 
-2. To draining function (for eth and ERC20 tokens), in case of.
+2. A draining function (for eth and ERC20 tokens), in case of.
 
 ### Use of zeppelin code
 We use open-zeppling code for `SafeMath`, `Ownable` and `StandardToken` logic (and as base code : `StandardCrowdsale.sol`).
