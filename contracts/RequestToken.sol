@@ -37,24 +37,28 @@ contract RequestToken is StandardToken, Ownable {
     }
 
     function transfer(address _to, uint _value)
+        public
         onlyWhenTransferEnabled
         returns (bool) {
         return super.transfer(_to, _value);
     }
 
     function transferFrom(address _from, address _to, uint _value)
+        public
         onlyWhenTransferEnabled
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }
 
     function emergencyERC20Drain( ERC20 token, uint amount ) 
+        public
         onlyOwner 
     {
         token.transfer( owner, amount );
     }
 
     function emergencyEthDrain( uint amount ) 
+        public
         onlyOwner 
     {
         owner.transfer( amount );

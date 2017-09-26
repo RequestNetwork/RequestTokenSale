@@ -72,11 +72,12 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
 
   // Drain the token not saled to the request Foundation multisign wallet
   function drainRemainingToken() 
+    public
     onlyOwner
   {
     require(hasEnded());
-    address requestFoundationAccount = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
-    token.transfer(requestFoundationAccount, token.balanceOf(this));
+    address requestFoundationWallet = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
+    token.transfer(requestFoundationWallet, token.balanceOf(this));
   }
   
 }
