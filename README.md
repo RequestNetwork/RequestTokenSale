@@ -12,10 +12,10 @@ In the second 24 hours, the individual cap is double.
 In the next 24 hours, the individual cap is double again etc.. until token supply is depleted.
 
 Preminted tokens are allocated to 4 differents addresses.
-	- 500000000 REQ (50%) are sent to the token sale contract
-    - 150000000 REQ (15%) are sent to the team vesting contract
-    - 150000000 REQ (15%) are sent to the foundation multisig wallet
-    - 200000000 REQ (20%) are sent to the early investors multisig wallet
+* 500000000 REQ (50%) are sent to the token sale contract
+* 150000000 REQ (15%) are sent to the team vesting contract
+* 150000000 REQ (15%) are sent to the foundation multisig wallet
+* 200000000 REQ (20%) are sent to the early investors multisig wallet
 
 
 
@@ -43,6 +43,7 @@ It is possible to buy several times, as long as cap is not exceeded.
 7. On T+3, the sale continue if the hard cap is not reached with an individual cap double again.
 
 8. On T+4, token sale is over. 
+We drain the tokens not sold to the foundation mutlisign wallet with the entry RequestTokenSale.drainRemainingToken()
 
 9. on T+7, token transfers are enabled for everyone.
 
