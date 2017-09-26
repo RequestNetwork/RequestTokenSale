@@ -69,5 +69,15 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     // uint tokenTotalAmount, uint _transferableStartTime, address _admin, address _earlyInvestorWallet
     return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime+PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC, REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
   }
+
+  // Drain the token not saled to the request Foundation multisign wallet
+  function drainRemainingToken() 
+    onlyOwner
+  {
+    require(hasEnded());
+    address requestFoundationAccount = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
+    token.transfer(requestFoundationAccount, token.balanceOf(this));
+  }
+  
 }
   
