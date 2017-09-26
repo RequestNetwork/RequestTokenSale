@@ -36,7 +36,7 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
   function setBaseEthCapPerAddress(uint256 _baseEthCapPerAddress) 
     public
     onlyOwner 
-    only24HBeforeSale
+    only10minutesBeforeSale // RINKEBY : 10 MINUTES BEFORE INSTEAD !
   {
     baseEthCapPerAddress = _baseEthCapPerAddress;
   }

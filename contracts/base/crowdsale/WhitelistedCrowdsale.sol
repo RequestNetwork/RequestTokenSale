@@ -21,7 +21,7 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
   function changeRegistrationStatus(address target, bool isRegistered)
       public
       onlyOwner
-      only24HBeforeSale
+      only10minutesBeforeSale // RINKEBY : 10 MINUTES BEFORE INSTEAD !
   {
       registered[target] = isRegistered;
       RegistrationStatusChanged( target, isRegistered );
@@ -33,7 +33,7 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
   function changeRegistrationStatuses(address[] targets, bool isRegistered)
       public
       onlyOwner
-      only24HBeforeSale
+      only10minutesBeforeSale // RINKEBY : 10 MINUTES BEFORE INSTEAD !
   {
       for (uint i = 0; i < targets.length; i++) {
           changeRegistrationStatus(targets[i], isRegistered);

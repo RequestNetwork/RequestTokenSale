@@ -124,8 +124,9 @@ contract StandardCrowdsale {
   }
 
   // REQUEST-NOTE : Add check 24hours before token sale
-  modifier only24HBeforeSale() {
-    require(now < startTime-(1 days));
+  // RINKEBY : 10 MINUTES BEFORE INSTEAD !
+  modifier only10minutesBeforeSale() {
+    require(now < startTime-(10 minutes));
     _;
   }
 }

@@ -5,9 +5,9 @@ import './base/ownership/Ownable.sol';
 
 // Request Network Token (Kyber Style)
 contract RequestToken is StandardToken, Ownable {
-    string  public  constant name = "Request Token";
-    string  public  constant symbol = "REQ";
-    uint    public  constant decimals = 18;
+    string  public  constant NAME = "Request Token";
+    string  public  constant SYMBOL = "REQ";
+    uint    public  constant DECIMALS = 18;
 
     uint    public  transferableStartTime;
 
@@ -37,24 +37,28 @@ contract RequestToken is StandardToken, Ownable {
     }
 
     function transfer(address _to, uint _value)
+        public
         onlyWhenTransferEnabled
         returns (bool) {
         return super.transfer(_to, _value);
     }
 
     function transferFrom(address _from, address _to, uint _value)
+        public
         onlyWhenTransferEnabled
         returns (bool) {
         return super.transferFrom(_from, _to, _value);
     }
 
     function emergencyERC20Drain( ERC20 token, uint amount ) 
+        public
         onlyOwner 
     {
         token.transfer( owner, amount );
     }
 
     function emergencyEthDrain( uint amount ) 
+        public
         onlyOwner 
     {
         owner.transfer( amount );
