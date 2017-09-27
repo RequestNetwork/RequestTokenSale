@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
 import "./base/crowdsale/CappedCrowdsale.sol";
-import "./base/crowdsale/WhitelistedCrowdsale.sol";
-import "./base/crowdsale/ProgressiveIndividualCappedCrowdsale.sol";
+import "./WhitelistedCrowdsale.sol";
+import "./ProgressiveIndividualCappedCrowdsale.sol";
 import "./base/token/StandardToken.sol";
 import "./RequestToken.sol";
 
@@ -66,7 +66,6 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     internal 
     returns(StandardToken) 
   {
-    // uint tokenTotalAmount, uint _transferableStartTime, address _admin, address _earlyInvestorWallet
     return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime+PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC, REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
   }
 

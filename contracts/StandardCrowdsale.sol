@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
-import '../token/StandardToken.sol';
-import '../math/SafeMath.sol';
+import './base/token/StandardToken.sol';
+import './base/math/SafeMath.sol';
 
 /**
  * @title Crowdsale

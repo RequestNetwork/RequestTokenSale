@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
-import "../crowdsale/StandardCrowdsale.sol";
-import "../token/StandardToken.sol";
-import '../ownership/Ownable.sol';
+import "./StandardCrowdsale.sol";
+import "./base/token/StandardToken.sol";
+import './base/ownership/Ownable.sol';
 
 /**
  * @title ProgressiveIndividualCappedCrowdsale

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import '../math/SafeMath.sol';
-import './StandardCrowdsale.sol';
+import '../../StandardCrowdsale.sol';
 
 /**
  * @title CappedCrowdsale

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "./StandardCrowdsale.sol";
-import '../ownership/Ownable.sol';
+import './base/ownership/Ownable.sol';
 
 /**
  * @title WhitelistedCrowdsale
