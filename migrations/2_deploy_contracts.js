@@ -1,8 +1,34 @@
-// var ConvertLib = artifacts.require("./ConvertLib.sol");
-// var MetaCoin = artifacts.require("./MetaCoin.sol");
+var RequestTokenSale = artifacts.require("./RequestTokenSale.sol");
+
+
+// Copy & Paste this
+Date.prototype.getUnixTime = function() { return this.getTime()/1000|0 };
+if(!Date.now) Date.now = function() { return new Date(); }
+Date.time = function() { return Date.now().getUnixTime(); }
+
+
+var tokenSaleContract;
 
 module.exports = function(deployer) {
-  // deployer.deploy(ConvertLib);
-  // deployer.link(ConvertLib, MetaCoin);
-  // deployer.deploy(MetaCoin);
+
+    var publicSaleStartTime = new Date('Sat, 16 Sep 2017 06:00:00 GMT').getUnixTime();
+    var publicSaleEndTime = new Date('Sun, 17 Sep 2017 06:00:00 GMT').getUnixTime();
+
+    // TEST PURPOSE ------------------------------------------------------------
+	const minute = 60*1000;
+	var startTimeTimestampJS = Date.now() + 30*minute;
+	var endTimeTimestampJS = startTimeTimestampJS + 15*minute;
+		// translate date in Second for solidity
+	publicSaleStartTime = Math.floor(startTimeTimestampJS/1000);
+	publicSaleEndTime = Math.floor(endTimeTimestampJS/1000);
+	// TEST PURPOSE ------------------------------------------------------------
+
+	console.log( "#################################################################################");
+	console.log( "publicSaleStartTime : "+publicSaleStartTime);
+	console.log( "publicSaleEndTime : "+publicSaleEndTime);
+	console.log( "#################################################################################");
+    return RequestTokenSale.new(publicSaleStartTime, publicSaleEndTime).then(function(result){
+        tokenSaleContract = result;
+        console.log("RequestTokenSale: "+tokenSaleContract.address);
+    });
 };
