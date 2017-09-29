@@ -10,9 +10,8 @@ Date.time = function() { return Date.now().getUnixTime(); }
 var tokenSaleContract;
 
 module.exports = function(deployer) {
-
-    var publicSaleStartTime = new Date('Sat, 16 Sep 2017 06:00:00 GMT').getUnixTime();
-    var publicSaleEndTime = new Date('Sun, 17 Sep 2017 06:00:00 GMT').getUnixTime();
+    var publicSaleStartTime = new Date("Thu, 28 Sep 2017 11:00:00 GMT").getUnixTime();
+    var publicSaleEndTime = new Date("Thu, 28 Sep 2017 13:00:00 GMT").getUnixTime();
 
     // TEST PURPOSE ------------------------------------------------------------
 	const minute = 60*1000;
@@ -25,7 +24,9 @@ module.exports = function(deployer) {
 
 	console.log( "#################################################################################");
 	console.log( "publicSaleStartTime : "+publicSaleStartTime);
+	console.log( "publicSaleStartTime : "+new Date(publicSaleStartTime*1000));
 	console.log( "publicSaleEndTime : "+publicSaleEndTime);
+	console.log( "publicSaleEndTime : "+new Date(publicSaleEndTime*1000));
 	console.log( "#################################################################################");
     return RequestTokenSale.new(publicSaleStartTime, publicSaleEndTime).then(function(result){
         tokenSaleContract = result;

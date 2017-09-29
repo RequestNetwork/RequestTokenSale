@@ -18,31 +18,34 @@ import "./RequestToken.sol";
  * The code is based on the contracts of Open Zeppelin and we add our contracts : RequestTokenSale, WhiteListedCrowdsale, ProgressiveIndividualCappedCrowdsale and the Request Token
  */
 contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale  {
+  // /!\ /!\ /!\ RINKEBY VERSION : all amount divided by 5000 ! /!\ /!\ /!\
+  // /!\ /!\ /!\ RINKEBY VERSION : rate to 500 ! /!\ /!\ /!\
+  // /!\ /!\ /!\ RINKEBY VERSION : period to 1h ! /!\ /!\ /!\
 
   // hard cap of the token sale in ether
-  uint public constant HARD_CAP_IN_ETHER = 100000 ether;
+  uint public constant HARD_CAP_IN_ETHER = 20 ether;
 
   // Total of Request Token supply
-  uint public constant TOTAL_REQUEST_TOKEN_SUPPLY = 1000000000;
+  uint public constant TOTAL_REQUEST_TOKEN_SUPPLY = 200000;
 
   // Token sale rate from ETH to REQ
-  uint public constant RATE_ETH_REQ = 5000;
+  uint public constant RATE_ETH_REQ = 500;
 
   // Token initialy distributed for the team (15%)
   address public constant TEAM_VESTING_WALLET = 0x095f32f02282a043c709bbc45854e72965e94bf2;
-  uint public constant TEAM_VESTING_AMOUNT = 150000000  * (10 ** uint256(18));
+  uint public constant TEAM_VESTING_AMOUNT = 30000 * (10 ** uint256(18));
 
   // Token initialy distributed for the early investor (20%)
   address public constant EARLY_INVESTOR_WALLET = 0xb80438e752527fa4b3d890a4192f8000025c79f9;
-  uint public constant EARLY_INVESTOR_AMOUNT = 200000000  * (10 ** uint256(18));
+  uint public constant EARLY_INVESTOR_AMOUNT = 40000 * (10 ** uint256(18));
 
   // Token initialy distributed for the early foundation (15%)
   // wallet use also to gather the ether of the token sale
-  address public constant REQUEST_FOUNDATION_WALLET = 0x4e96617d23a9d6d41fe706f159c0bdc7ee97db0d;
-  uint public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
+  address public constant REQUEST_FOUNDATION_WALLET = 0xe3c0f7db1643b1fc69e5555c307b172922b56719;
+  uint public constant REQUEST_FOUNDATION_AMOUNT = 30000 * (10 ** uint256(18));
 
   // PERIOD WHEN TOKEN IS NOT TRANSFERABLE AFTER THE SALE
-  uint public constant PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC = 3 days;
+  uint public constant PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC = 1 hours;
 
 
   function RequestTokenSale(uint256 _startTime, uint256 _endTime)

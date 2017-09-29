@@ -20,6 +20,7 @@ contract StandardCrowdsale {
   // start and end timestamps where investments are allowed (both inclusive)
   uint256 public startTime;
   uint256 public endTime;
+  uint public hour1  = 1 hours;
 
   // address where funds are collected
   address public wallet;
@@ -124,8 +125,9 @@ contract StandardCrowdsale {
   }
 
   // REQUEST-NOTE : Add check 24hours before token sale
+  // TODO : 1 HOUR BEFORE FOR TEST !!!
   modifier only24HBeforeSale() {
-    require(now < startTime-(1 days));
+    require(now < startTime-hour1);
     _;
   }
 }

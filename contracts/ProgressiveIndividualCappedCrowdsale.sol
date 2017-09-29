@@ -11,8 +11,8 @@ import './base/ownership/Ownable.sol';
  */
 
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
-
-  uint public constant TIME_PERIOD_IN_SEC = 1 days;
+  // modified for test purpose TODO /!\ /!\ /!\ /!\ 
+  uint public constant TIME_PERIOD_IN_SEC = 30 minutes;
   uint public constant GAS_LIMIT_IN_WEI = 50000000000 wei; // limit gas price -50 Gwei wales stopper
   uint256 public baseEthCapPerAddress = 0 ether;
 
@@ -45,6 +45,7 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
   // This amount increase everyday in an exponential way. Day 1: base cap, Day 2: 2 * base cap, Day 3: 4 * base cap ...
   function getCurrentEthCapPerAddress() 
     public
+    constant
     returns(uint)
   {
     if (block.timestamp < startTime || startTime == 0) return 0;
