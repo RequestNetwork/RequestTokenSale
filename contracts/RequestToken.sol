@@ -15,20 +15,27 @@ contract RequestToken is StandardToken, Ownable {
     address public  earlyInvestorWallet;
 
 
-    modifier onlyWhenTransferEnabled() {
-        if( now <= transferableStartTime ) {
-            require( msg.sender == tokenSaleContract || msg.sender == earlyInvestorWallet || msg.sender == owner  );
+    modifier onlyWhenTransferEnabled() 
+    {
+        if ( now <= transferableStartTime ) {
+            require(msg.sender == tokenSaleContract || msg.sender == earlyInvestorWallet || msg.sender == owner);
         }
         _;
     }
 
-    modifier validDestination( address to ) {
+    modifier validDestination(address to) 
+    {
         require(to != address(0x0));
-        require(to != address(this) );
+        require(to != address(this));
         _;
     }
 
-    function RequestToken( uint tokenTotalAmount, uint _transferableStartTime, address _admin, address _earlyInvestorWallet) {
+    function RequestToken(
+        uint tokenTotalAmount, 
+        uint _transferableStartTime, 
+        address _admin, 
+        address _earlyInvestorWallet) 
+    {
         // Mint all tokens. Then disable minting forever.
         totalSupply = tokenTotalAmount * (10 ** uint256(decimals));
 
@@ -46,7 +53,8 @@ contract RequestToken is StandardToken, Ownable {
         public
         validDestination(_to)
         onlyWhenTransferEnabled
-        returns (bool) {
+        returns (bool) 
+    {
         return super.transfer(_to, _value);
     }
 
@@ -54,7 +62,8 @@ contract RequestToken is StandardToken, Ownable {
         public
         validDestination(_to)
         onlyWhenTransferEnabled
-        returns (bool) {
+        returns (bool) 
+    {
         return super.transferFrom(_from, _to, _value);
     }
 
@@ -73,23 +82,25 @@ contract RequestToken is StandardToken, Ownable {
     }
 
     // save some gas by making only one contract call
-    function burnFrom(address _from, uint256 _value) onlyWhenTransferEnabled
-        returns (bool) {
-        assert( transferFrom( _from, msg.sender, _value ) );
+    function burnFrom(address _from, uint256 _value) 
+        onlyWhenTransferEnabled
+        returns(bool) 
+    {
+        assert(transferFrom(_from, msg.sender, _value));
         return burn(_value);
     }
 
-    function emergencyERC20Drain( ERC20 token, uint amount ) 
+    function emergencyERC20Drain(ERC20 token, uint amount ) 
         public
         onlyOwner 
     {
-        token.transfer( owner, amount );
+        token.transfer(owner, amount);
     }
 
     function emergencyEthDrain( uint amount ) 
         public
         onlyOwner 
     {
-        owner.transfer( amount );
+        owner.transfer(amount);
     }
 }
