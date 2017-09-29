@@ -45,6 +45,7 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
   // This amount increase everyday in an exponential way. Day 1: base cap, Day 2: 2 * base cap, Day 3: 4 * base cap ...
   function getCurrentEthCapPerAddress() 
     public
+    constant
     returns(uint)
   {
     if (block.timestamp < startTime || startTime == 0) return 0;
