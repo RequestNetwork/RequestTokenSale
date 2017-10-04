@@ -25,7 +25,6 @@ contract RequestToken is StandardToken, Ownable {
 
     modifier validDestination(address to) 
     {
-        require(to != address(0x0));
         require(to != address(this));
         _;
     }
