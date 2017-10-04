@@ -97,10 +97,4 @@ contract RequestToken is StandardToken, Ownable {
         token.transfer(owner, amount);
     }
 
-    function emergencyEthDrain( uint amount ) 
-        public
-        onlyOwner 
-    {
-        owner.transfer(amount);
-    }
 }

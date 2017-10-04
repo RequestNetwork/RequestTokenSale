@@ -28,16 +28,16 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     uint public constant RATE_ETH_REQ = 5000;
 
     // Token initialy distributed for the team (15%)
-    address public constant TEAM_VESTING_WALLET = 0x095f32f02282a043c709bbc45854e72965e94bf2;
+    address public constant TEAM_VESTING_WALLET = 0xa76bc39ae4b88ef203c6afe3fd219549d86d12f2;
     uint public constant TEAM_VESTING_AMOUNT = 150000000 * (10 ** uint256(18));
 
     // Token initialy distributed for the early investor (20%)
-    address public constant EARLY_INVESTOR_WALLET = 0xb80438e752527fa4b3d890a4192f8000025c79f9;
+    address public constant EARLY_INVESTOR_WALLET = 0xa579e31b930796e3df50a56829cf82db98b6f4b3;
     uint public constant EARLY_INVESTOR_AMOUNT = 200000000 * (10 ** uint256(18));
 
     // Token initialy distributed for the early foundation (15%)
     // wallet use also to gather the ether of the token sale
-    address public constant REQUEST_FOUNDATION_WALLET = 0x4e96617d23a9d6d41fe706f159c0bdc7ee97db0d;
+    address public constant REQUEST_FOUNDATION_WALLET = 0xdd76b55ee6dafe0c7c978bff69206d476a5b9ce7;
     uint public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
 
     // PERIOD WHEN TOKEN IS NOT TRANSFERABLE AFTER THE SALE
