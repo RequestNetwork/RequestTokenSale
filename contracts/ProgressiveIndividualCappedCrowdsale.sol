@@ -22,7 +22,6 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
     // @return true if investors can buy at the moment
     function validPurchase() 
         internal 
-        constant 
         returns(bool)
     {
         require(tx.gasprice <= GAS_LIMIT_IN_WEI);
