@@ -15,7 +15,7 @@ contract StandardCrowdsale {
     using SafeMath for uint256;
 
     // The token being sold
-    StandardToken public token; // REQUEST-NOTE : change to not mintable
+    StandardToken public token; // Request Modification : change to not mintable
 
     // start and end timestamps where investments are allowed (both inclusive)
     uint256 public startTime;
@@ -54,11 +54,12 @@ contract StandardCrowdsale {
         rate = _rate;
         wallet = _wallet;
 
-        token = createTokenContract(); // REQUEST-NOTE : change to StandardToken + position
+        token = createTokenContract(); // Request Modification : change to StandardToken + position
     }
 
     // creates the token to be sold.
-    // REQUEST-NOTE : change to StandardToken
+    // Request Modification : change to StandardToken
+    // override this method to have crowdsale of a specific mintable token.
     function createTokenContract() 
         internal 
         returns(StandardToken) 
@@ -74,7 +75,7 @@ contract StandardCrowdsale {
     }
 
     // low level token purchase function
-    // REQUEST-NOTE : change to not mint but transfer from this contract
+    // Request Modification : change to not mint but transfer from this contract
     function buyTokens() 
        public 
        payable 
@@ -89,7 +90,7 @@ contract StandardCrowdsale {
         // update state
         weiRaised = weiRaised.add(weiAmount);
 
-        token.transfer(msg.sender, tokens); // REQUEST-NOTE : changed here - tranfer instead of mintable
+        token.transfer(msg.sender, tokens); // Request Modification : changed here - tranfer instead of mintable
         TokenPurchase(msg.sender, weiAmount, tokens);
 
         forwardFunds();
@@ -106,7 +107,6 @@ contract StandardCrowdsale {
     // @return true if the transaction can buy tokens
     function validPurchase() 
         internal 
-        constant 
         returns(bool) 
     {
         bool withinPeriod = now >= startTime && now <= endTime;
@@ -128,7 +128,7 @@ contract StandardCrowdsale {
         _;
     }
 
-    // REQUEST-NOTE : Add check 24hours before token sale
+    // Request Modification : Add check 24hours before token sale
     modifier only24HBeforeSale() {
         require(now < startTime-(1 days));
         _;

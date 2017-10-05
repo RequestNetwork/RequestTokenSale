@@ -42,7 +42,7 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
 
     // overriding Crowdsale#validPurchase to add whilelist
     // @return true if investors can buy at the moment, false otherwise
-    function validPurchase() internal constant returns (bool) {
+    function validPurchase() internal returns (bool) {
         return super.validPurchase() && registered[msg.sender];
     }
 }
