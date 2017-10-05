@@ -63,7 +63,7 @@ It inherits from `ProgressiveIndividualCappedCrowdsale.sol` developped by Reques
 
 It inherits from `WhitelistedCrowdsale.sol` developped by Request, providing the White list mechanism
 
-It uses `SafeMath.sol` from Open Zeppelin, providing the whitelist mechanism
+It uses `SafeMath.sol` from Open Zeppelin
 
 Owner can list and delist users until the last 24h before the token sale.
 Owner can modify the individual base cap until the last 24h before the token sale.
