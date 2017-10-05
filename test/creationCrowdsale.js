@@ -106,10 +106,15 @@ contract('Creation Token Sale', function(accounts) {
 		// startTime before now	opcode
 		const startTimeBeforeNow = new Date("2016-10-13").getTime();
 		const startTimeBeforeNowSolidity = Math.floor(startTimeBeforeNow/1000);
-		await expectThrow(RequestTokenSale.new(startTimeBeforeNowSolidity, endTimeSolidity));
+		const endTimeSolidity = new Date("2018-10-13").getTime();
+		const endTimeSoliditySolidity = Math.floor(endTimeSolidity/1000);
+		await expectThrow(RequestTokenSale.new(startTimeBeforeNowSolidity, endTimeSoliditySolidity));
 
 		// endTime before startTime	opcode
-		const endBeforeStart = new Date("2017-10-11").getTime();
+		const startTime = new Date("2018-10-11").getTime();
+		const startTimeSolidity = Math.floor(startTime/1000);
+
+		const endBeforeStart = new Date("2018-09-11").getTime();
 		const endBeforeStartSolidity = Math.floor(endBeforeStart/1000);
 		await expectThrow(RequestTokenSale.new(startTimeSolidity, endBeforeStartSolidity));
 	});

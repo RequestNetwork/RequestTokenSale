@@ -86,7 +86,7 @@ contract('Drain remaining token after sale', function(accounts) {
 
 	});
 
-	it("buy token ", async function() {
+	it("drain token ", async function() {
 		var weiSpend = web3.toWei(10, "ether");
 
 		// cannot drain before the sale
