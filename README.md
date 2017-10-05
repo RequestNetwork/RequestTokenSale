@@ -81,7 +81,7 @@ The token is fully compatible with ERC20 standard, with the next two additions:
 1. The tokens become transferable 7 days after the token sale start.
 To be more precise, only the token sale contract, early investor multisign wallet and foundation multisign wallet are allowed to transfer tokens before.
 
-2. 2 draining functions (for eth and ERC20 tokens), in case of.
+2. A draining function (for ERC20 tokens), in case of.
 
 ### Use of zeppelin code
 We use open-zeppling code for `SafeMath`, `Ownable` and `StandardToken` logic (and as base code : `StandardCrowdsale.sol`).
