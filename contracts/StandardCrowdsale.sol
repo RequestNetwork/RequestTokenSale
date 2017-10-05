@@ -90,7 +90,7 @@ contract StandardCrowdsale {
         // update state
         weiRaised = weiRaised.add(weiAmount);
 
-        token.transfer(msg.sender, tokens); // Request Modification : changed here - tranfer instead of mintable
+        require(token.transfer(msg.sender, tokens)); // Request Modification : changed here - tranfer instead of mintable
         TokenPurchase(msg.sender, weiAmount, tokens);
 
         forwardFunds();
@@ -130,7 +130,7 @@ contract StandardCrowdsale {
 
     // Request Modification : Add check 24hours before token sale
     modifier only24HBeforeSale() {
-        require(now < startTime-(1 days));
+        require(now < startTime.sub(1 days));
         _;
     }
 }

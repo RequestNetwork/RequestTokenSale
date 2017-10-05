@@ -82,6 +82,7 @@ contract RequestToken is StandardToken, Ownable {
 
     // save some gas by making only one contract call
     function burnFrom(address _from, uint256 _value) 
+        public
         onlyWhenTransferEnabled
         returns(bool) 
     {
