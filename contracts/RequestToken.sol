@@ -36,7 +36,7 @@ contract RequestToken is StandardToken, Ownable {
         address _earlyInvestorWallet) 
     {
         // Mint all tokens. Then disable minting forever.
-        totalSupply = tokenTotalAmount * (10 ** uint256(decimals));
+        totalSupply = tokenTotalAmount * (10 ** decimals);
 
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
@@ -82,6 +82,7 @@ contract RequestToken is StandardToken, Ownable {
 
     // save some gas by making only one contract call
     function burnFrom(address _from, uint256 _value) 
+        public
         onlyWhenTransferEnabled
         returns(bool) 
     {
@@ -89,7 +90,7 @@ contract RequestToken is StandardToken, Ownable {
         return burn(_value);
     }
 
-    function emergencyERC20Drain(ERC20 token, uint amount ) 
+    function emergencyERC20Drain(ERC20 token, uint amount )
         public
         onlyOwner 
     {

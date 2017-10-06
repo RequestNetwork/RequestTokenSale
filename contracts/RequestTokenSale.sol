@@ -19,26 +19,26 @@ import "./RequestToken.sol";
  */
 contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale {
     // hard cap of the token sale in ether
-    uint public constant HARD_CAP_IN_ETHER = 100000 ether;
+    uint private constant HARD_CAP_IN_WEI = 100000 ether;
 
     // Total of Request Token supply
     uint public constant TOTAL_REQUEST_TOKEN_SUPPLY = 1000000000;
 
     // Token sale rate from ETH to REQ
-    uint public constant RATE_ETH_REQ = 5000;
+    uint private constant RATE_ETH_REQ = 5000;
 
     // Token initialy distributed for the team (15%)
-    address public constant TEAM_VESTING_WALLET = 0xa76bc39ae4b88ef203c6afe3fd219549d86d12f2;
-    uint public constant TEAM_VESTING_AMOUNT = 150000000 * (10 ** uint256(18));
+    address public constant TEAM_VESTING_WALLET = 0xA76bC39aE4B88ef203C6Afe3fD219549d86D12f2;
+    uint public constant TEAM_VESTING_AMOUNT = 150000000e18;
 
     // Token initialy distributed for the early investor (20%)
-    address public constant EARLY_INVESTOR_WALLET = 0xa579e31b930796e3df50a56829cf82db98b6f4b3;
-    uint public constant EARLY_INVESTOR_AMOUNT = 200000000 * (10 ** uint256(18));
+    address public constant EARLY_INVESTOR_WALLET = 0xa579E31b930796e3Df50A56829cF82Db98b6F4B3;
+    uint public constant EARLY_INVESTOR_AMOUNT = 200000000e18;
 
     // Token initialy distributed for the early foundation (15%)
     // wallet use also to gather the ether of the token sale
-    address public constant REQUEST_FOUNDATION_WALLET = 0xdd76b55ee6dafe0c7c978bff69206d476a5b9ce7;
-    uint public constant REQUEST_FOUNDATION_AMOUNT = 150000000 * (10 ** uint256(18));
+    address private constant REQUEST_FOUNDATION_WALLET = 0xdD76B55ee6dAfe0c7c978bff69206d476a5b9Ce7;
+    uint public constant REQUEST_FOUNDATION_AMOUNT = 150000000e18;
 
     // PERIOD WHEN TOKEN IS NOT TRANSFERABLE AFTER THE SALE
     uint public constant PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC = 3 days;
@@ -46,17 +46,15 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
     function RequestTokenSale(uint256 _startTime, uint256 _endTime)
       ProgressiveIndividualCappedCrowdsale()
       WhitelistedCrowdsale()
-      CappedCrowdsale(HARD_CAP_IN_ETHER)
+      CappedCrowdsale(HARD_CAP_IN_WEI)
       StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET)
     {
-        address vestingAccount = TEAM_VESTING_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
-        token.transfer(vestingAccount, TEAM_VESTING_AMOUNT);
 
-        address earlyInvestorAccount = EARLY_INVESTOR_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
-        token.transfer(earlyInvestorAccount, EARLY_INVESTOR_AMOUNT);
+        token.transfer(TEAM_VESTING_WALLET, TEAM_VESTING_AMOUNT);
 
-        address requestFoundationAccount = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
-        token.transfer(requestFoundationAccount, REQUEST_FOUNDATION_AMOUNT);
+        token.transfer(EARLY_INVESTOR_WALLET, EARLY_INVESTOR_AMOUNT);
+
+        token.transfer(REQUEST_FOUNDATION_WALLET, REQUEST_FOUNDATION_AMOUNT);
     }
 
     // override Crowdsale.createTokenContract to create RequestToken token
@@ -64,17 +62,16 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
       internal 
       returns(StandardToken) 
     {
-        return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime+PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC, REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
+        return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime.add(PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC), REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
     }
 
-    // Drain the token not saled to the request Foundation multisign wallet
+    // Transfer the unsold tokens to the request Foundation multisign wallet
     function drainRemainingToken () 
       public
       onlyOwner
     {
         require(hasEnded());
-        address requestFoundationWallet = REQUEST_FOUNDATION_WALLET; // avoid TypeError: Member "transfer" is not available in contract StandardToken outside of storage.
-        token.transfer(requestFoundationWallet, token.balanceOf(this));
+        token.transfer(REQUEST_FOUNDATION_WALLET, token.balanceOf(this));
     }
   
 }
