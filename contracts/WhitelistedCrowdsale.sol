@@ -6,7 +6,7 @@ import './base/ownership/Ownable.sol';
 /**
  * @title WhitelistedCrowdsale
  * @dev This is an extension to add whitelist to a crowdsale
- * @author vrolland@Request
+ * @author Request.network
  *
  */
 contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
@@ -15,9 +15,11 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
 
     event RegistrationStatusChanged(address target, bool isRegistered);
 
-    /// @dev Changes registration status of an address for participation.
-    /// @param target Address that will be registered/deregistered.
-    /// @param isRegistered New registration status of address.
+    /**
+     * @dev Changes registration status of an address for participation.
+     * @param target Address that will be registered/deregistered.
+     * @param isRegistered New registration status of address.
+     */
     function changeRegistrationStatus(address target, bool isRegistered)
         public
         onlyOwner
@@ -27,9 +29,11 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
         RegistrationStatusChanged(target, isRegistered);
     }
 
-    /// @dev Changes registration statuses of addresses for participation.
-    /// @param targets Addresses that will be registered/deregistered.
-    /// @param isRegistered New registration status of addresses.
+    /**
+     * @dev Changes registration statuses of addresses for participation.
+     * @param targets Addresses that will be registered/deregistered.
+     * @param isRegistered New registration status of addresses.
+     */
     function changeRegistrationStatuses(address[] targets, bool isRegistered)
         public
         onlyOwner
@@ -40,8 +44,10 @@ contract WhitelistedCrowdsale is StandardCrowdsale, Ownable {
         }
     }
 
-    // overriding Crowdsale#validPurchase to add whilelist
-    // @return true if investors can buy at the moment, false otherwise
+    /**
+     * @dev overriding Crowdsale#validPurchase to add whilelist
+     * @return true if investors can buy at the moment, false otherwise
+     */
     function validPurchase() internal returns (bool) {
         return super.validPurchase() && registered[msg.sender];
     }

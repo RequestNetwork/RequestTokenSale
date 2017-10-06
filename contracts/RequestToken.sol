@@ -3,7 +3,12 @@ pragma solidity 0.4.15;
 import './base/token/StandardToken.sol';
 import './base/ownership/Ownable.sol';
 
-// Request Network Token (Kyber Style)
+/**
+ * @title The RequestToken contract
+ * @dev The Request Token contract
+ * @dev inherite from StandardToken and Ownable by Zeppelin
+ * @author Request.network
+ */
 contract RequestToken is StandardToken, Ownable {
     string  public  constant name = "Request Token";
     string  public  constant symbol = "REQ";
@@ -48,6 +53,11 @@ contract RequestToken is StandardToken, Ownable {
         transferOwnership(_admin); // admin could drain tokens and eth that were sent here by mistake
     }
 
+    /**
+     * @dev override transfer token for a specified address to add onlyWhenTransferEnabled and validDestination
+     * @param _to The address to transfer to.
+     * @param _value The amount to be transferred.
+     */
     function transfer(address _to, uint _value)
         public
         validDestination(_to)
@@ -57,6 +67,12 @@ contract RequestToken is StandardToken, Ownable {
         return super.transfer(_to, _value);
     }
 
+    /**
+     * @dev override transferFrom token for a specified address to add onlyWhenTransferEnabled and validDestination
+     * @param _from The address to transfer from.
+     * @param _to The address to transfer to.
+     * @param _value The amount to be transferred.
+     */
     function transferFrom(address _from, address _to, uint _value)
         public
         validDestination(_to)
@@ -68,6 +84,11 @@ contract RequestToken is StandardToken, Ownable {
 
     event Burn(address indexed _burner, uint _value);
 
+    /**
+     * @dev burn tokens
+     * @param _value The amount to be burned.
+     * @return always true (necessary in case of override)
+     */
     function burn(uint _value) 
         public
         onlyWhenTransferEnabled
@@ -80,7 +101,12 @@ contract RequestToken is StandardToken, Ownable {
         return true;
     }
 
-    // save some gas by making only one contract call
+    /**
+     * @dev burn tokens in the behalf of someone
+     * @param _from The address of the owner of the token.
+     * @param _value The amount to be burned.
+     * @return always true (necessary in case of override)
+     */
     function burnFrom(address _from, uint256 _value) 
         public
         onlyWhenTransferEnabled
@@ -90,6 +116,11 @@ contract RequestToken is StandardToken, Ownable {
         return burn(_value);
     }
 
+    /**
+     * @dev transfer to owner any tokens send by mistake on this contracts
+     * @param token The address of the token to transfer.
+     * @param amount The amount to be transfered.
+     */
     function emergencyERC20Drain(ERC20 token, uint amount )
         public
         onlyOwner 

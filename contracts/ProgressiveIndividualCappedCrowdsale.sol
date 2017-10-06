@@ -7,9 +7,8 @@ import './base/ownership/Ownable.sol';
 /**
  * @title ProgressiveIndividualCappedCrowdsale
  * @dev Extension of Crowdsale with a progressive individual cap
- * @author vrolland@Request
+ * @author Request.network
  */
-
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
 
     uint public constant TIME_PERIOD_IN_SEC = 1 days;
@@ -18,8 +17,10 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
 
     mapping(address=>uint) public participated;
 
-    // @dev overriding CappedCrowdsale#validPurchase to add an individual cap
-    // @return true if investors can buy at the moment
+    /**
+     * @dev overriding CappedCrowdsale#validPurchase to add an individual cap
+     * @return true if investors can buy at the moment
+     */
     function validPurchase() 
         internal 
         returns(bool)
@@ -30,8 +31,10 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
         return super.validPurchase() && participated[msg.sender] <= ethCapPerAddress;
     }
 
-    // @dev Set the individual cap for the first day. This function can not be called withing the 24h before the sale for security reasons
-    // @param _baseEthCapPerAddress base cap in wei
+    /**
+     * @dev Set the individual cap for the first day. This function can not be called withing the 24h before the sale for security reasons
+     * @param _baseEthCapPerAddress base cap in wei
+     */
     function setBaseEthCapPerAddress(uint256 _baseEthCapPerAddress) 
         public
         onlyOwner 
@@ -40,8 +43,11 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
         baseEthCapPerAddress = _baseEthCapPerAddress;
     }
 
-    // @dev Get the current individual cap. 
-    // This amount increase everyday in an exponential way. Day 1: base cap, Day 2: 2 * base cap, Day 3: 4 * base cap ...
+    /**
+     * @dev Get the current individual cap. 
+     * @dev This amount increase everyday in an exponential way. Day 1: base cap, Day 2: 2 * base cap, Day 3: 4 * base cap ...
+     * @return individual cap in wei
+     */
     function getCurrentEthCapPerAddress() 
         public
         constant

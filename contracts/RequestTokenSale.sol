@@ -16,6 +16,8 @@ import "./RequestToken.sol";
  * ProgressiveIndividualCappedCrowdsale - add a Progressive individual cap
  *
  * The code is based on the contracts of Open Zeppelin and we add our contracts : RequestTokenSale, WhiteListedCrowdsale, ProgressiveIndividualCappedCrowdsale and the Request Token
+ *
+ * @author Request.network
  */
 contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, ProgressiveIndividualCappedCrowdsale {
     // hard cap of the token sale in ether
@@ -49,7 +51,6 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
       CappedCrowdsale(HARD_CAP_IN_WEI)
       StandardCrowdsale(_startTime, _endTime, RATE_ETH_REQ, REQUEST_FOUNDATION_WALLET)
     {
-
         token.transfer(TEAM_VESTING_WALLET, TEAM_VESTING_AMOUNT);
 
         token.transfer(EARLY_INVESTOR_WALLET, EARLY_INVESTOR_AMOUNT);
@@ -57,7 +58,10 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
         token.transfer(REQUEST_FOUNDATION_WALLET, REQUEST_FOUNDATION_AMOUNT);
     }
 
-    // override Crowdsale.createTokenContract to create RequestToken token
+    /**
+     * @dev Create the Request token (override createTokenContract of StandardCrowdsale)
+     * @return the StandardToken created
+     */
     function createTokenContract () 
       internal 
       returns(StandardToken) 
@@ -65,7 +69,11 @@ contract RequestTokenSale is Ownable, CappedCrowdsale, WhitelistedCrowdsale, Pro
         return new RequestToken(TOTAL_REQUEST_TOKEN_SUPPLY, endTime.add(PERIOD_AFTERSALE_NOT_TRANSFERABLE_IN_SEC), REQUEST_FOUNDATION_WALLET, EARLY_INVESTOR_WALLET);
     }
 
-    // Transfer the unsold tokens to the request Foundation multisign wallet
+    /**
+     * @dev Transfer the unsold tokens to the request Foundation multisign wallet 
+     * @dev Only for owner
+     * @return the StandardToken created
+     */
     function drainRemainingToken () 
       public
       onlyOwner
