@@ -22,7 +22,6 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
     // @return true if investors can buy at the moment
     function validPurchase() 
         internal 
-        constant
         returns(bool)
     {
         require(tx.gasprice <= GAS_LIMIT_IN_WEI);
@@ -48,9 +47,11 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
         constant
         returns(uint)
     {
-        if (block.timestamp < startTime || startTime == 0) return 0;
+        if (block.timestamp < startTime) return 0;
         uint timeSinceStartInSec = block.timestamp.sub(startTime);
         uint currentPeriod = timeSinceStartInSec.div(TIME_PERIOD_IN_SEC).add(1);
+
+        require(currentPeriod < 257); // avoid overflow
         return (2 ** currentPeriod.sub(1)).mul(baseEthCapPerAddress);
     }
 }
