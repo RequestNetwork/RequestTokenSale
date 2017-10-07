@@ -12,7 +12,7 @@ import './base/ownership/Ownable.sol';
 contract RequestToken is StandardToken, Ownable {
     string  public  constant name = "Request Token";
     string  public  constant symbol = "REQ";
-    uint    public  constant decimals = 18;
+    uint8    public  constant decimals = 18;
 
     uint    public  transferableStartTime;
 
