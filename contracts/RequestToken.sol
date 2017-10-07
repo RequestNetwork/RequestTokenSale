@@ -41,7 +41,7 @@ contract RequestToken is StandardToken, Ownable {
         address _earlyInvestorWallet) 
     {
         // Mint all tokens. Then disable minting forever.
-        totalSupply = tokenTotalAmount * (10 ** decimals);
+        totalSupply = tokenTotalAmount * (10 ** uint256(decimals));
 
         balances[msg.sender] = totalSupply;
         Transfer(address(0x0), msg.sender, totalSupply);
