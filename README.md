@@ -2,11 +2,11 @@
 In this document, we describe the token sale specification and implementation,
 and give an overview over the smart contracts structure.
 
-The code has been audited by Quantstamp (Vajih Montaghami, Ed Zulkoski and Steven Stewart) and Clement Lesaege, CTO at Kleros.
+The code has been audited by [Quantstamp](https://quantstamp.com/) (Vajih Montaghami, Ed Zulkoski and Steven Stewart) and [Clement Lesaege](https://www.linkedin.com/in/cl%C3%A9ment-lesaege-a326b9ab/?ppe=1), CTO at Kleros.
 
-https://quantstamp.com/
 
-https://www.linkedin.com/in/cl%C3%A9ment-lesaege-a326b9ab/?ppe=1
+
+
 
 ## Informal Specification
 The token sale is open only to registered users.
