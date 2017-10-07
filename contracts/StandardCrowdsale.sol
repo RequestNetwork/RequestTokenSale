@@ -4,12 +4,13 @@ import './base/token/StandardToken.sol';
 import './base/math/SafeMath.sol';
 
 /**
- * @title Crowdsale
- * @dev Crowdsale is a base contract for managing a token crowdsale.
+ * @title StandardCrowdsale 
+ * @dev StandardCrowdsale is a base contract for managing a token crowdsale.
  * Crowdsales have a start and end timestamps, where investors can make
  * token purchases and the crowdsale will assign them tokens based
  * on a token per ETH rate. Funds collected are forwarded to a wallet
  * as they arrive.
+ * @dev from Crowdsale by Zepellin with small changes. Changes are commented with "Request Modification"
  */
 contract StandardCrowdsale {
     using SafeMath for uint256;

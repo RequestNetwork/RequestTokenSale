@@ -7,6 +7,7 @@ import './base/ownership/Ownable.sol';
 /**
  * @title ProgressiveIndividualCappedCrowdsale
  * @dev Extension of Crowdsale with a progressive individual cap
+ * @warning This contract is not made for crowdsale superior to 256 * TIME_PERIOD_IN_SEC
  * @author Request.network
  */
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
@@ -57,7 +58,7 @@ contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
         uint timeSinceStartInSec = block.timestamp.sub(startTime);
         uint currentPeriod = timeSinceStartInSec.div(TIME_PERIOD_IN_SEC).add(1);
 
-        require(currentPeriod < 257); // avoid overflow
+        // for currentPeriod > 256 will always return baseEthCapPerAddress
         return (2 ** currentPeriod.sub(1)).mul(baseEthCapPerAddress);
     }
 }
