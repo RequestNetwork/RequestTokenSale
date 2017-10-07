@@ -7,7 +7,7 @@ import './base/ownership/Ownable.sol';
 /**
  * @title ProgressiveIndividualCappedCrowdsale
  * @dev Extension of Crowdsale with a progressive individual cap
- * @warning This contract is not made for crowdsale superior to 256 * TIME_PERIOD_IN_SEC
+ * @dev This contract is not made for crowdsale superior to 256 * TIME_PERIOD_IN_SEC
  * @author Request.network
  */
 contract ProgressiveIndividualCappedCrowdsale is StandardCrowdsale, Ownable {
