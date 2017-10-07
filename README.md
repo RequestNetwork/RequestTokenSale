@@ -2,6 +2,12 @@
 In this document, we describe the token sale specification and implementation,
 and give an overview over the smart contracts structure.
 
+The code has been audited by Quantstamp (Vajih Montaghami, Ed Zulkoski and Steven Stewart) and Clement Lesaege, CTO at Kleros.
+https://quantstamp.com/
+https://www.linkedin.com/in/cl%C3%A9ment-lesaege-a326b9ab/?ppe=1
+
+![Quantstamp](https://scontent-frx5-1.xx.fbcdn.net/v/t1.0-9/21687410_1174732659337944_499717820942893761_n.png?oh=09948f413693a2894627928af218d531&oe=5A45BC3B)
+
 ## Informal Specification
 The token sale is open only to registered users.
 Every user has the same individual cap for the amount of Ether he can contribute.
